@@ -7,6 +7,9 @@ export default defineConfig({
   theme: {
     colors: {
       veryCool: '#0000ff'
+    },
+    spacing: {
+      aside: '200px'
     }
   }
 })

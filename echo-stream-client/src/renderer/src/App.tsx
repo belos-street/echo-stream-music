@@ -1,13 +1,16 @@
 import { AsideList } from './layout/aside-list'
+import { HeaderBar } from './layout/header-bar'
+import { MusicBar } from './layout/music-bar'
 
 function App(): JSX.Element {
   return (
     <>
-      <div>233</div>
-      <main>
+      <HeaderBar />
+      <div className="flex-1">
         <AsideList />
-      </main>
-      <div>233</div>
+        <main></main>
+      </div>
+      <MusicBar />
     </>
   )
 }
