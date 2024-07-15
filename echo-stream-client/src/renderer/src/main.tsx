@@ -1,6 +1,6 @@
 import './assets/main.css'
-import 'uno.css'
 import 'virtual:uno.css'
+import '@unocss/reset/normalize.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'

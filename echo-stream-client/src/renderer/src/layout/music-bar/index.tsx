@@ -1,7 +1,9 @@
+import { SliderBar } from './progress-bar'
+
 export function MusicBar(): JSX.Element {
   return (
-    <header className="w-screen flex flex-col h-14 bg-neutral-900">
-      <div className="w-screen h-px bg-red-600"></div>
+    <header className="w-screen flex flex-col h-60 bg-neutral-900 relative">
+      <SliderBar />
       <div>322</div>
     </header>
   )

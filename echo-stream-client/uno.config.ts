@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   theme: {
     colors: {
-      veryCool: '#0000ff'
+      primary: '#d33a31'
     },
     spacing: {
       aside: '200px'
