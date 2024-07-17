@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 export type PlayStore = {
-  progress: number //0% ~100% 如52.1%
+  progress: number //0% ~100%
   setProgress: (progress: number) => void
 }
 
