@@ -13,10 +13,14 @@ export default defineConfig({
   ],
   theme: {
     colors: {
-      primary: '#d33a31'
+      primary: '#00F268'
     },
     spacing: {
       aside: '200px'
     }
   }
 })
+
+/**
+ * @color text-neutral-500 辅助文字色
+ */
