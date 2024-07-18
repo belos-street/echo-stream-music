@@ -1,17 +1,8 @@
 import { SliderBar } from './progress-bar'
-import {
-  HeartFilled,
-  MutedFilled,
-  PauseCircleFilled,
-  PlayCircleFilled,
-  StepBackwardOutlined,
-  StepForwardOutlined
-} from '@ant-design/icons'
-import { SingleLoopIcon, PlayLoopIcon, RandomPlayIcon } from '@renderer/assets/icons'
-import { usePlayStore, PlayStaus } from '@renderer/store/usePlayStore'
+import { PlayPanel } from './play-panel'
+import { ControlPanel } from './control-panel'
 
 export function MusicBar(): JSX.Element {
-  const { status, setStatus } = usePlayStore()
   return (
     <footer className="w-screen flex flex-col h-60 bg-neutral-900 relative">
       <SliderBar />
@@ -31,23 +22,8 @@ export function MusicBar(): JSX.Element {
             </div>
           </div>
         </div>
-        <div className="flex w-1/3 justify-center gap-16">
-          <HeartFilled className="cursor-pointer mr-16" />
-          <StepBackwardOutlined className="text-20 cursor-pointer c-primary" />
-          {status === PlayStaus.Paused && (
-            <PauseCircleFilled className="text-32 cursor-pointer c-primary" />
-          )}
-          {status === PlayStaus.Playing && (
-            <PlayCircleFilled className="text-32 cursor-pointer c-primary" />
-          )}
-          <StepForwardOutlined className="text-20 cursor-pointer c-primary" />
-        </div>
-        <div className="flex w-1/3 pr-16 justify-end gap-16">
-          <SingleLoopIcon className="text-16 cursor-pointer" />
-          <PlayLoopIcon className="text-16 cursor-pointer" />
-          <RandomPlayIcon className="text-16 cursor-pointer" />
-          <MutedFilled />
-        </div>
+        <PlayPanel />
+        <ControlPanel />
       </div>
     </footer>
   )
