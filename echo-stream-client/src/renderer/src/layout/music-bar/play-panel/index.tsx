@@ -10,10 +10,10 @@ import { PlayStaus, usePlayStore } from '@renderer/store/usePlayStore'
 export function PlayPanel(): JSX.Element {
   const { status, setStatus } = usePlayStore()
 
-  const handleStatusClick = (s: PlayStaus) => {
-    if (s === PlayStaus.Paused) {
+  const handleStatusClick = () => {
+    if (status === PlayStaus.Paused) {
       setStatus(PlayStaus.Playing)
-    } else if (s === PlayStaus.Playing) {
+    } else if (status === PlayStaus.Playing) {
       setStatus(PlayStaus.Paused)
     }
   }
@@ -22,16 +22,16 @@ export function PlayPanel(): JSX.Element {
     <div className="flex w-1/3 justify-center gap-16">
       <HeartFilled className="cursor-pointer mr-16 c-red" />
       <StepBackwardOutlined className="text-20 cursor-pointer c-primary" />
-      {status === PlayStaus.Paused && (
+      {status === PlayStaus.Playing && (
         <PauseCircleFilled
           className="text-32 cursor-pointer c-primary"
-          onClick={() => handleStatusClick(PlayStaus.Paused)}
+          onClick={() => handleStatusClick()}
         />
       )}
-      {status === PlayStaus.Playing && (
+      {status === PlayStaus.Paused && (
         <PlayCircleFilled
           className="text-32 cursor-pointer c-primary"
-          onClick={() => handleStatusClick(PlayStaus.Playing)}
+          onClick={() => handleStatusClick()}
         />
       )}
       <StepForwardOutlined className="text-20 cursor-pointer c-primary" />

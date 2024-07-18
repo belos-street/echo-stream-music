@@ -16,3 +16,10 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+#search-input {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding: 1.5px 8px;
+  font-size: 12px;
+}
