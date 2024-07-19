@@ -23,3 +23,11 @@ body {
   padding: 1.5px 8px;
   font-size: 12px;
 }
+
+.draggable-header {
+  -webkit-app-region: drag;
+}
+
+.draggable-header__disable {
+  -webkit-app-region: no-drag;
+}

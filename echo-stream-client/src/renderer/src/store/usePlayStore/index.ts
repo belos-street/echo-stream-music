@@ -1,7 +1,7 @@
 //当前播放的状态
 
-// import { useLocalStorage } from '@renderer/hooks'
 import { create } from 'zustand'
+import { initVolume } from './initVolume'
 
 export enum PlayStaus {
   Playing,
@@ -27,7 +27,7 @@ export type PlayStore = {
 
 export const usePlayStore = create<PlayStore>((set) => {
   const mode = (window.localStorage.getItem('playMode') as PlayMode) ?? PlayMode.Loop
-  const volume = Number(window.localStorage.getItem('playVolume'))
+  const volume = initVolume()
   return {
     progress: 0,
     setProgress: (progress) => set((state) => ({ ...state, progress })),
