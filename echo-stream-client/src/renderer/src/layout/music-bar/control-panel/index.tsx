@@ -36,7 +36,7 @@ export function ControlPanel(): JSX.Element {
       <div className="flex gap-8 items-center">
         <MutedFilled />
         <div
-          className="w-100 h-8 bg-neutral-500 cursor-pointer rounded-full relative"
+          className="w-100 h-6 bg-neutral-500 cursor-pointer rounded-full relative"
           onClick={handleVolumeClick}
         >
           <div

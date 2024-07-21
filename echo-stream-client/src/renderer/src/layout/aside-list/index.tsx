@@ -1,6 +1,7 @@
 import { DownloadOutlined, HeartOutlined, UserOutlined } from '@ant-design/icons'
 import { DailyIcon, MusicIcon, AddIcon, MusicListIcon, RecentlyPlayedIcon } from '@icons/'
 import { Avatar } from 'antd'
+import { ListItem } from './list-item'
 
 export function AsideList(): JSX.Element {
   return (
@@ -10,46 +11,27 @@ export function AsideList(): JSX.Element {
         <span className="text-14 font-bold">用户名</span>
       </section>
       <ul className="mt-16 text-14 font-bold px-0">
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <MusicIcon className="mr-8 " />
-          发现音乐
-        </li>
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <DailyIcon className="mr-8" />
-          每日推荐
-        </li>
+        <ListItem name="发现音乐" route="/" icon={<MusicIcon className="mr-8 " />} />
+        <ListItem name="每日推荐" route="/daily" icon={<DailyIcon className="mr-8" />} />
       </ul>
       <ul className="mt-16 text-14 px-0">
         <li className="pl-16 mb-6 text-12 text-neutral-500">我的音乐</li>
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <HeartOutlined className="mr-8" />
-          我喜欢
-        </li>
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <RecentlyPlayedIcon className="mr-8" />
-          最近播放
-        </li>
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <DownloadOutlined className="mr-8" />
-          下载管理
-        </li>
+        <ListItem name="我喜欢" route="/like" icon={<HeartOutlined className="mr-8" />} />
+        <ListItem
+          name="最近播放"
+          route="/recently"
+          icon={<RecentlyPlayedIcon className="mr-8" />}
+        />
+        <ListItem name="下载管理" route="/download" icon={<DownloadOutlined className="mr-8" />} />
       </ul>
       <ul className="px-0 mt-16 text-14">
         <li className="pl-16 mb-6 text-12 text-neutral-500 flex justify-between">
-          创建的歌单 <AddIcon className="mr-8 cursor-pointer" />
+          创建的歌单
+          <AddIcon className="mr-8 cursor-pointer" />
         </li>
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <MusicListIcon className="mr-8" />
-          歌单1
-        </li>
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <MusicListIcon className="mr-8" />
-          歌单1
-        </li>
-        <li className="pl-16 py-4 hover:bg-neutral-950 transition-background duration-300 ease-in-ou cursor-pointer">
-          <MusicListIcon className="mr-8" />
-          歌单1
-        </li>
+        <ListItem name="歌单1" route="/list/1" icon={<MusicListIcon className="mr-8" />} />
+        <ListItem name="歌单2" route="/list/2" icon={<MusicListIcon className="mr-8" />} />
+        <ListItem name="歌单3" route="/list/3" icon={<MusicListIcon className="mr-8" />} />
       </ul>
     </aside>
   )
