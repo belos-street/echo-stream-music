@@ -1,0 +1,23 @@
+[
+  {
+    "id": "233",
+    "title": "California Dreaming",
+    "singer": "The Mamas & the Papas",
+    "album": "If You Can Believe Your Eyes & Ears",
+    "length": "162"
+  },
+  {
+    "id": "123",
+    "title": "青い栞",
+    "singer": "Galileo Galilei",
+    "album": "車輪の軸",
+    "length": "338"
+  },
+  {
+    "id": "321",
+    "title": "Let It Be",
+    "singer": "The Beatles",
+    "album": "Let It Be (Remastered)",
+    "length": "243"
+  }
+]
