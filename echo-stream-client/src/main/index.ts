@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { initApiRequest } from './request'
 
 function createWindow(): void {
   // Create the browser window.
@@ -15,7 +16,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      contextIsolation: true //这意味着渲染进程将运行在一个隔离的环境中,需要使用 contextBridge 来安全地暴露所需的 API
     },
     titleBarStyle: 'hidden'
   })
@@ -36,6 +38,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  initApiRequest()
 }
 
 // This method will be called when Electron has finished

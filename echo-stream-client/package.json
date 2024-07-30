@@ -26,6 +26,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@unocss/reset": "^0.61.3",
     "antd": "^5.19.2",
+    "axios": "^1.7.2",
     "electron-updater": "^6.1.7",
     "react-router-dom": "^6.25.1",
     "zustand": "^4.5.4"

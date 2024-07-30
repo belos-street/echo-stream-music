@@ -4,6 +4,9 @@ import { HeaderBar } from './layout/header-bar'
 import { MusicBar } from './layout/music-bar'
 import { MusicList } from './page/music-list'
 
+// import { api } from '../../preload'
+
+// console.log(api)
 function App(): JSX.Element {
   return (
     <>
