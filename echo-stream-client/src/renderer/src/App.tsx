@@ -3,8 +3,21 @@ import { AsideList } from './layout/aside-list'
 import { HeaderBar } from './layout/header-bar'
 import { MusicBar } from './layout/music-bar'
 import { MusicList } from './page/music-list'
+import { Button } from 'antd'
 
-console.log(window.api)
+//继续封装请求器
+function clickTest() {
+  window.api
+    .request<{ key: string }>('post', 'users/login', {
+      data: { username: 'jiangzhi1', password: '1qaz2WSX' }
+    })
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
 
 function App(): JSX.Element {
   return (
@@ -22,6 +35,7 @@ function App(): JSX.Element {
             <Route path="/list/:id" element={<MusicList />} />
           </Routes>
         </main>
+        <Button onClick={() => clickTest()}>click test</Button>
       </div>
       <MusicBar />
     </>

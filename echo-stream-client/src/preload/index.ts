@@ -1,20 +1,22 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { IPCEvent } from '../main/eunm/ipcEunm'
+import { HTTPMethod } from '../main/request'
+import { AxiosRequestConfig } from 'axios'
 
 // Custom APIs for renderer
 export const api = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  request: <T>(url: string, options?: any): Promise<T> => {
+  request: <T>(method: HTTPMethod, api: string, config?: AxiosRequestConfig): Promise<T> => {
     return new Promise((resolve, reject) => {
       // Send the request to the main process
-      electronAPI.ipcRenderer.send('api:request', url, options)
+      electronAPI.ipcRenderer.send(IPCEvent['api:request'], method, api, config)
 
       // Listen for the response
-      electronAPI.ipcRenderer.once('api:response', (_event, response) => {
+      electronAPI.ipcRenderer.once(IPCEvent['api:response'], (_event, response) => {
         if (response.error) {
-          reject(response.error)
+          reject(response)
         } else {
-          resolve(response.data)
+          resolve(response)
         }
       })
     })

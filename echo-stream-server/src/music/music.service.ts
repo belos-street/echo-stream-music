@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { DbService } from 'src/db/db.service'
 import { Music } from './entities/music.entity'
+import { successResponse } from 'util/apiResponse'
 
 @Injectable()
 export class MusicService {
@@ -9,6 +10,6 @@ export class MusicService {
 
   async likeList() {
     const list: Music[] = await this.dbService.read()
-    return list
+    return successResponse(list)
   }
 }

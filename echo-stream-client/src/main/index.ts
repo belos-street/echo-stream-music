@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { initApiRequest } from './request'
+import { setupApiRequest } from './request'
 
 function createWindow(): void {
   // Create the browser window.
@@ -39,7 +39,7 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  initApiRequest()
+  setupApiRequest()
 }
 
 // This method will be called when Electron has finished
