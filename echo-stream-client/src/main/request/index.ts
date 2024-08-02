@@ -3,7 +3,6 @@ import { ipcMain } from 'electron'
 import { IPCEvent } from '../eunm/ipcEunm'
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:3000',
   timeout: 1000 * 6,
   responseType: 'json',
   headers: {
@@ -21,13 +20,17 @@ export function setupApiRequest() {
         let response: AxiosResponse
         if (method !== 'get') {
           if (!config || !config.data) throw new Error('Missing data for POST request')
+          console.log(1111)
           response = await axiosInstance[method](api, config?.data, config)
         } else {
           response = await axiosInstance.get(api, config)
         }
         event.reply(IPCEvent['api:response'], response.data)
       } catch (error) {
+        console.log(error, 'eeeee')
         const errorData: AxiosError = error as AxiosError
+
+        //区分业务code 还是http请求失败
         event.reply(IPCEvent['api:response'], errorData.response!.data)
       }
     }

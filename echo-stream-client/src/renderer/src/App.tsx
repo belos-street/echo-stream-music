@@ -5,17 +5,19 @@ import { MusicBar } from './layout/music-bar'
 import { MusicList } from './page/music-list'
 import { Button } from 'antd'
 
+import { userLoginRequest } from './server/api/user'
+
 //继续封装请求器
 function clickTest() {
-  window.api
-    .request<{ key: string }>('post', 'users/login', {
-      data: { username: 'jiangzhi1', password: '1qaz2WSX' }
-    })
+  userLoginRequest({
+    username: 'jiangzhi',
+    password: '1qaz@WSX'
+  })
     .then((res) => {
       console.log(res)
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err, 'eee')
     })
 }
 

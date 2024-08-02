@@ -6,7 +6,7 @@ import { AxiosRequestConfig } from 'axios'
 
 // Custom APIs for renderer
 export const api = {
-  request: <T>(method: HTTPMethod, api: string, config?: AxiosRequestConfig): Promise<T> => {
+  request: (method: HTTPMethod, api: string, config?: AxiosRequestConfig) => {
     return new Promise((resolve, reject) => {
       // Send the request to the main process
       electronAPI.ipcRenderer.send(IPCEvent['api:request'], method, api, config)
