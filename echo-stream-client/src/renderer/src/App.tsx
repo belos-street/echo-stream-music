@@ -14,7 +14,7 @@ function clickTest() {
     password: '1qaz@WSX'
   })
     .then((res) => {
-      console.log(res)
+      console.log(res, 'okkkkkkk')
     })
     .catch((err) => {
       console.log(err, 'eee')

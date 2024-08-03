@@ -1,27 +1,13 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { IPCEvent } from '../main/eunm/ipcEunm'
-import { HTTPMethod } from '../main/request'
-import { AxiosRequestConfig } from 'axios'
 
+import { apiRequest } from './api/apiRequest'
 // Custom APIs for renderer
 export const api = {
-  request: (method: HTTPMethod, api: string, config?: AxiosRequestConfig) => {
-    return new Promise((resolve, reject) => {
-      // Send the request to the main process
-      electronAPI.ipcRenderer.send(IPCEvent['api:request'], method, api, config)
-
-      // Listen for the response
-      electronAPI.ipcRenderer.once(IPCEvent['api:response'], (_event, response) => {
-        if (response.error) {
-          reject(response)
-        } else {
-          resolve(response)
-        }
-      })
-    })
-  }
+  request: apiRequest
 }
+
+export type Preload = typeof api
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

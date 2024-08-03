@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { ipcMain } from 'electron'
 import { IPCEvent } from '../eunm/ipcEunm'
 
@@ -20,30 +20,35 @@ export function setupApiRequest() {
         let response: AxiosResponse
         if (method !== 'get') {
           if (!config || !config.data) throw new Error('Missing data for POST request')
-          console.log(1111)
           response = await axiosInstance[method](api, config?.data, config)
         } else {
           response = await axiosInstance.get(api, config)
         }
         event.reply(IPCEvent['api:response'], response.data)
       } catch (error) {
-        console.log(error, 'eeeee')
-        const errorData: AxiosError = error as AxiosError
-
-        //区分业务code 还是http请求失败
-        event.reply(IPCEvent['api:response'], errorData.response!.data)
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            /// 请求已发出，服务器返回了状态码范围不在 2xx 的响应
+            console.error('HTTP error:', error.response.status, error.response.data)
+            event.reply(IPCEvent['api:response'], error.response.data)
+          } else {
+            //说明请求已经发出但没有收到响应 或 设置请求时发生了错误
+            console.error('No response received or Error setting up request')
+            event.reply(IPCEvent['api:response'], { error: 'Request failed' })
+          }
+        }
       }
     }
   )
 }
 
-// 添加请求拦截器
-// request.interceptors.request.use(
+//添加请求拦截器
+// axiosInstance.interceptors.request.use(
 //   (config: AxiosRequestConfig) => {
 //     // 在这里可以添加认证令牌等
 //     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
 //     return config
-//   },/^(?:1[0-2]|0?[1-9]):[0-5]\d:[0-5]\d$/
+//   },
 //   (error) => {
 //     return Promise.reject(error)
 //   }

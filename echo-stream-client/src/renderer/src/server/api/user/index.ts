@@ -7,4 +7,4 @@ const api = {
   register: `${baseUrl}/users/register`
 }
 
-export const userLoginRequest = (data: UserLogin) => http.post(api.login, data)
+export const userLoginRequest = (data: UserLogin) => http.post<{ data: number }>(api.login, data)

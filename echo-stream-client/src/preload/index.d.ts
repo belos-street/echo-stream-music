@@ -1,10 +1,8 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import type { HTTPMethod } from '../main/request'
+import type { Preload } from '.'
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: {
-      request: <T>(method: HTTPMethod, api: string, config?: AxiosRequestConfig) => Promise<T>
-    }
+    api: Preload
   }
 }
