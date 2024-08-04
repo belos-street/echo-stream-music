@@ -4,21 +4,18 @@ import { HeaderBar } from './layout/header-bar'
 import { MusicBar } from './layout/music-bar'
 import { MusicList } from './page/music-list'
 import { Button } from 'antd'
-
 import { userLoginRequest } from './server/api/user'
+
+import { Daily } from './page/daily'
 
 //继续封装请求器
 function clickTest() {
   userLoginRequest({
     username: 'jiangzhi',
-    password: '1qaz@WSX'
+    password: '1qaz2WSX'
+  }).then((res) => {
+    console.log(res, 'okkkkkkk')
   })
-    .then((res) => {
-      console.log(res, 'okkkkkkk')
-    })
-    .catch((err) => {
-      console.log(err, 'eee')
-    })
 }
 
 function App(): JSX.Element {
@@ -30,7 +27,7 @@ function App(): JSX.Element {
         <main>
           <Routes>
             <Route path="/" element={<h1>111</h1>} />
-            <Route path="/daily" element={<h1>222</h1>} />
+            <Route path="/daily" element={<Daily />} />
             <Route path="/like" element={<h1>333</h1>} />
             <Route path="/recently" element={<h1>444</h1>} />
             <Route path="/download" element={<h1>555</h1>} />

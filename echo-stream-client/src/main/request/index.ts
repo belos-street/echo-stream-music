@@ -34,7 +34,11 @@ export function setupApiRequest() {
           } else {
             //说明请求已经发出但没有收到响应 或 设置请求时发生了错误
             console.error('No response received or Error setting up request')
-            event.reply(IPCEvent['api:response'], { error: 'Request failed' })
+            event.reply(IPCEvent['api:response'], {
+              error: 'Bad Request',
+              message: 'Request failed',
+              statusCode: null
+            })
           }
         }
       }

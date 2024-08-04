@@ -23,6 +23,10 @@ export function apiRequest<T>(
       if (response.error) {
         reject(response)
         message.error(response.message)
+
+        //处理业务code报错
+        // if (response.statusCode) {
+        // }
       } else {
         resolve(response)
       }
