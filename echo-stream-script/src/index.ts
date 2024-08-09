@@ -1,10 +1,8 @@
-import { load } from 'cheerio'
-import { requestHtml } from './request'
 import { requestDownload } from './download'
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import type { Page } from 'puppeteer'
-import puppeteer from 'puppeteer'
+import { launch } from 'puppeteer'
+import { analyzeWebsite } from './analyze'
 
 export type MusicJSON = {
   url: string
@@ -13,81 +11,44 @@ export type MusicJSON = {
 }
 
 async function exec() {
+  console.log('--- exec beginning ---')
   //1. 读取需要爬虫的歌曲信息
   const musicList = readDataJSON() as MusicJSON[]
 
-  //2. 调度器下载歌曲信息，禁止一次性下载太多
-  const browser = await puppeteer.launch({ headless: false }) //浏览器运行过程
+  //2. 创建浏览器环境
+  const browser = await launch({ headless: false })
   const page = await browser.newPage()
 
+  //3. 调度 线性下载歌曲信息，不设置并发下载以免被反爬
   for (const music of musicList) {
-    console.log('download begin - ', music.name)
-    await handleDownloadFile(page, music)
+    console.log('download :', music.name)
+
+    //3.1 获取web页面的下载信息
+    const musicUrl = await analyzeWebsite(page, music)
+    if (!musicUrl) {
+      console.log(`analyze failed :${music.name}`)
+      continue
+    }
+
+    //3.2 下载文件到本地
+    const downloadCallback = await requestDownload(music, musicUrl!)
+    downloadCallback && console.log(`succeed :${music.name}`)
+
+    console.log('--- ---')
   }
 
+  //关闭浏览器环境
   await browser.close()
+  console.log('--- exec completed ---')
 }
 
 function readDataJSON() {
-  const assetsPath = join(process.cwd(), 'assets', 'data.json')
+  const assetsPath = join(process.cwd(), 'data.json')
   try {
     const dataJSON = readFileSync(assetsPath, 'utf-8')
     return JSON.parse(dataJSON)
   } catch (error) {
     console.error(error)
-  }
-}
-
-// async function handleDownloadFile(music: MusicJSON) {
-//   try {
-//     const html = await requestHtml(music.url)
-//     const $ = load(html)
-
-//     const albumUrl = $('#aplayer img').attr('src')!
-//     console.log($('#btn-download-mp3'), 'mp3')
-//     const songUrl = $('#btn-download-mp3').attr('href')!
-
-//     if (!albumUrl || !songUrl) throw new Error('albumUrl or songUrl is empty')
-
-//     const downloadCallback = await requestDownload(music, { album: albumUrl, song: songUrl })
-
-//     if (downloadCallback) {
-//       console.log(`download succeed :${music.name}`)
-//     }
-//   } catch (error) {
-//     console.error('handleDownloadFileRequest:', error)
-//   }
-// }
-
-async function handleDownloadFile(page: Page, music: MusicJSON) {
-  try {
-    await page.goto(music.url, { waitUntil: 'networkidle2' })
-
-    await page.waitForSelector('.aplayer-pic')
-    const albumUrl = await page.evaluate((selector) => {
-      const element = document.querySelector(selector) as HTMLDivElement
-      if (element) {
-        return element.style.backgroundImage.replace(/url\(["']?(.*?)["']?\)/i, '$1')
-      }
-      return null
-    }, '.aplayer-pic')
-
-    await page.waitForSelector('#btn-download-mp3')
-    const songUrl = await page.evaluate((selector) => {
-      const element = document.querySelector(selector) as HTMLDivElement
-      if (element) return element.getAttribute('href')
-      return null
-    }, '#btn-download-mp3')
-
-    if (!albumUrl || !songUrl) throw new Error('albumUrl or songUrl is empty')
-
-    const downloadCallback = await requestDownload(music, { album: albumUrl, song: songUrl })
-
-    if (downloadCallback) {
-      console.log(`download succeed :${music.name}`)
-    }
-  } catch (error) {
-    console.error('handleDownloadFileRequest:', error)
   }
 }
 

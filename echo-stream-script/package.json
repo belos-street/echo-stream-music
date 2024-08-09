@@ -4,8 +4,8 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "pnpm build && node dist/index.js",
-    "build": "esbuild src/index.ts --platform=node --bundle --minify --outfile=dist/index.js",
+    "start": "ts-node src/index.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --minify --outfile=dist/index.js",
     "type-check": "tsc --noEmit"
   },
   "keywords": [],
