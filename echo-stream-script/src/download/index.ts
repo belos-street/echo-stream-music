@@ -1,9 +1,9 @@
 import { createWriteStream, constants, writeFile } from 'fs'
-import https from 'https'
-import http from 'http'
+
 import { join } from 'path'
 import { MusicJSON } from '..'
-import { access } from 'fs/promises'
+import { access, mkdir } from 'fs/promises'
+import { getUrlProtocol } from '../utils'
 
 type MusicUrl = {
   song: string
@@ -13,6 +13,7 @@ type MusicUrl = {
 
 export async function requestDownload(music: MusicJSON, url: MusicUrl) {
   const assetsPath = join(process.cwd(), 'assets')
+  await accessAssetsFiles(assetsPath)
 
   const albumName = music.id + '.' + url.album.split('.').pop()!
   const ablumPath = join(assetsPath, 'album', albumName)
@@ -42,6 +43,20 @@ export async function requestDownload(music: MusicJSON, url: MusicUrl) {
   }
 
   return true
+}
+
+//检查资源目录是否存在
+async function accessAssetsFiles(dirPath: string) {
+  try {
+    // 尝试读取目录元数据
+    await access(dirPath, constants.F_OK)
+  } catch (error) {
+    // 如果目录不存在，则尝试创建
+    await mkdir(dirPath, { recursive: true })
+    await mkdir(join(dirPath, 'song'), { recursive: true })
+    await mkdir(join(dirPath, 'lyric'), { recursive: true })
+    await mkdir(join(dirPath, 'album'), { recursive: true })
+  }
 }
 
 function handleDownloadFile(url: string, filePath: string) {
@@ -86,8 +101,3 @@ async function checkRepeatFile(filePath: string) {
 }
 
 //生成下载报告结果
-
-//判断下载
-function getUrlProtocol(url: string) {
-  return url.startsWith('https') ? https : http
-}

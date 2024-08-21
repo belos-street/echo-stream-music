@@ -1,5 +1,6 @@
 import type { Page } from 'puppeteer'
 import { MusicJSON } from '..'
+import { getFinalUrl } from '../utils'
 
 export async function analyzeWebsite(page: Page, music: MusicJSON) {
   try {
@@ -17,11 +18,12 @@ export async function analyzeWebsite(page: Page, music: MusicJSON) {
 
     const songSelector = '#j-src-btn'
     await page.waitForSelector(songSelector)
-    const songUrl = await page.evaluate((selector) => {
+    const songInitUrl = await page.evaluate((selector) => {
       const element = document.querySelector(selector) as HTMLDivElement
       if (element) return element.getAttribute('href')
       return null
     }, songSelector)
+    const songUrl = await getFinalUrl(songInitUrl)
 
     const lrcSelector = '#j-lrc'
     await page.waitForSelector(lrcSelector)
