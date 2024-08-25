@@ -3,6 +3,8 @@ import { RegisterUserDto } from './dto/register-user.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserEntity } from './entities/user.entity'
+import { LoginUserDto } from './dto/login-user.dto'
+import { InfoUserDto } from './dto/info-user.dto'
 
 @Injectable()
 export class UserService {
@@ -42,5 +44,32 @@ export class UserService {
 
     const newUser = this.userRepository.create(registerUserDto)
     return this.userRepository.save(newUser)
+  }
+
+  async login(loginUserDto: LoginUserDto) {
+    const user = await this.userRepository.findOne({ where: { username: loginUserDto.username } })
+
+    if (!user) {
+      throw new HttpException('The user does not exist or the password is incorrect', HttpStatus.BAD_REQUEST)
+    }
+
+    if (user.password !== loginUserDto.password) {
+      throw new HttpException('The user does not exist or the password is incorrect', HttpStatus.BAD_REQUEST)
+    }
+
+    return user
+  }
+
+  async getUserInfo(infoUserDto: InfoUserDto) {
+    const user = await this.userRepository.findOne({
+      where: { id: infoUserDto.id },
+      select: ['id', 'username', 'nickName', 'email', 'headPic']
+    })
+
+    if (!user) {
+      throw new HttpException('The user does not exist', HttpStatus.BAD_REQUEST)
+    }
+
+    return user
   }
 }
