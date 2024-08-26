@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, JoinColumn } from 'typeorm'
 import { ArtistEntity } from './artist.entity'
-// import { Album } from './album.entity'
+import { AlbumEntity } from './album.entity'
 // import { Genre } from './genre.entity'
 
 /** 歌曲表 */
@@ -28,6 +28,10 @@ export class SongEntity {
   createTime: Date
 
   @ManyToOne(() => ArtistEntity)
-  @JoinColumn({ name: 'artist_id' }) // 指定外键列
+  @JoinColumn({ name: 'artist_id' })
   artist: ArtistEntity
+
+  @ManyToOne(() => AlbumEntity)
+  @JoinColumn({ name: 'album_id' })
+  album: AlbumEntity
 }
