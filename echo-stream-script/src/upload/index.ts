@@ -1,11 +1,11 @@
 import * as Minio from 'minio'
 
+type ElementObj = { name: string; size: number }
 export class UploadBase {
   private minioClient: Minio.Client
   private bucketName: string = 'echo-stream'
 
   constructor() {
-    console.log(111)
     this.minioClient = new Minio.Client({
       endPoint: 'localhost',
       port: 9000,
@@ -13,7 +13,6 @@ export class UploadBase {
       accessKey: 'echo-stream',
       secretKey: process.env.MYSQL_PASSWORD as string //这里把秘钥设置成了mysql的密码
     })
-    console.log(222)
   }
 
   /**
@@ -60,16 +59,24 @@ export class UploadBase {
    * 列出桶中的所有文件
    * https://min.io/docs/minio/linux/developers/javascript/API.html#listObjectsV2
    */
-  // async listObjects(): Promise<string[]> {
-  //   try {
-  //     console.log(33)
-  //     const objects = this.minioClient.listObjectsV2(this.bucketName, '', true, '')
-  //     //console.log(objects.map(obj=> ob))
-  //     // return objects.objects.map((obj) => obj.name)
-  //     return []
-  //   } catch (error) {
-  //     console.error('Error listing objects:', error)
-  //     throw error
-  //   }
-  // }
+  async listObjects(): Promise<ElementObj[]> {
+    return new Promise((resolve, reject) => {
+      const stream = this.minioClient.listObjects(this.bucketName, '', true)
+
+      const list: ElementObj[] = []
+
+      stream.on('data', function (obj: ElementObj) {
+        list.push(obj)
+      })
+
+      stream.on('error', (err) => {
+        console.error('Error listing objects:', err)
+        reject(err)
+      })
+
+      stream.on('end', () => {
+        resolve(list)
+      })
+    })
+  }
 }

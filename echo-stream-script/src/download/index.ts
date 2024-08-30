@@ -1,45 +1,39 @@
 import { createWriteStream, constants, writeFile } from 'fs'
 
 import { join } from 'path'
-import { MusicJSON } from '..'
+import { SongInfo } from '..'
 import { access, mkdir } from 'fs/promises'
 import { getUrlProtocol } from '../utils'
 
-type MusicUrl = {
-  song: string
-  lyric: string
-  album: string
-}
-
-export async function requestDownload(music: MusicJSON, url: MusicUrl) {
+export async function requestDownload(song: SongInfo) {
   const assetsPath = join(process.cwd(), 'assets')
   await accessAssetsFiles(assetsPath)
 
-  const albumName = music.id + '.' + url.album.split('.').pop()!
+  const albumName = song.id + '.' + song.coverUrl.split('.').pop()!
   const ablumPath = join(assetsPath, 'album', albumName)
   const isRepeatAblum = await checkRepeatFile(ablumPath)
   if (!isRepeatAblum) {
-    await handleDownloadFile(url.album, ablumPath)
+    await handleDownloadFile(song.coverUrl, ablumPath)
   } else {
-    console.log(music.name, ' 重复封面文件跳过下载')
+    console.log(song.title, ' 重复封面文件跳过下载')
   }
 
-  const songName = music.id + '.mp3'
+  const songName = song.id + '.mp3'
   const songPath = join(assetsPath, 'song', songName)
   const isRepeatSong = await checkRepeatFile(songPath)
   if (!isRepeatSong) {
-    await handleDownloadFile(url.song, songPath)
+    await handleDownloadFile(song.songUrl, songPath)
   } else {
-    console.log(music.name, ' 重复歌曲文件跳过下载')
+    console.log(song.title, ' 重复歌曲文件跳过下载')
   }
 
-  const lyricName = music.id + '.lrc'
+  const lyricName = song.id + '.lrc'
   const lyricPath = join(assetsPath, 'lyric', lyricName)
   const isRepeatLyric = await checkRepeatFile(lyricPath)
   if (!isRepeatLyric) {
-    await handleWriteFile(lyricPath, url.lyric)
+    await handleWriteFile(lyricPath, song.lyric)
   } else {
-    console.log(music.name, ' 重复歌词文件跳过下载')
+    console.log(song.title, ' 重复歌词文件跳过下载')
   }
 
   return true
@@ -99,5 +93,3 @@ async function checkRepeatFile(filePath: string) {
     return false
   }
 }
-
-//生成下载报告结果
