@@ -5,31 +5,33 @@ import { launch } from 'puppeteer'
 import { analyzeWebsite } from './analyze'
 import { UploadBase } from './upload'
 
-export type MusicJSON = {
-  url: string
-  id: string
-  name: string
+export type SongInfo = {
+  album: string
+  song: string
+  lyric: string
+  id:string
+  artist: string
 }
 
 async function exec() {
   console.log('--- exec beginning ---')
   //1. 读取需要爬虫的歌曲信息
-  const musicList = readDataJSON() as MusicJSON[]
+  const musicList = readDataJSON() as string[]
   //2. 创建浏览器环境
   const browser = await launch({ headless: false })
   const page = await browser.newPage()
   //3. 调度 线性下载歌曲信息，不设置并发下载以免被反爬
   for (const music of musicList) {
-    console.log('download :', music.name)
+    console.log('download :', music)
     //3.1 获取web页面的下载信息
     const musicUrl = await analyzeWebsite(page, music)
     if (!musicUrl) {
-      console.log(`analyze failed :${music.name}`)
+      console.log(`analyze failed :${music}`)
       continue
     }
     //3.2 下载文件到本地
     const downloadCallback = await requestDownload(music, musicUrl!)
-    downloadCallback && console.log(`succeed :${music.name}`)
+    downloadCallback && console.log(`succeed :${music}`)
     console.log('--- ---')
   }
   //4.关闭浏览器环境

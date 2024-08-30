@@ -1,10 +1,11 @@
 import type { Page } from 'puppeteer'
-import { MusicJSON } from '..'
 import { getFinalUrl } from '../utils'
+import { SongInfo } from '..'
 
-export async function analyzeWebsite(page: Page, music: MusicJSON) {
+export async function analyzeWebsite(page: Page, music: string): Promise<SongInfo | false> {
   try {
-    await page.goto(music.url, { waitUntil: 'networkidle2' })
+    const musicUrl = `https://suntl.com/other/musicss/?name=${encodeURIComponent(music)}&type=netease`
+    await page.goto(musicUrl, { waitUntil: 'networkidle2' })
 
     const albumSelector = '.aplayer-pic'
     await page.waitForSelector(albumSelector)
@@ -29,7 +30,6 @@ export async function analyzeWebsite(page: Page, music: MusicJSON) {
     await page.waitForSelector(lrcSelector)
     const lyricText = await page.evaluate((selector) => {
       const element = document.querySelector(selector) as HTMLInputElement
-
       if (element) return element.value
       return null
     }, lrcSelector)
