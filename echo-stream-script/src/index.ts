@@ -4,6 +4,7 @@ import { join } from 'path'
 import { launch } from 'puppeteer'
 import { analyzeWebsite } from './analyze'
 import { UploadBase } from './upload'
+import { generateResult } from './generate'
 
 export type SongInfo = {
   coverUrl: string
@@ -46,16 +47,19 @@ async function exec() {
   //4.关闭浏览器环境
   await browser.close()
   console.log('--- download completed ---')
-  console.log(musicInfoList)
 
-  //5. 上传到文件服务器
+  //5.生成爬虫数据
+  console.log('--- generate sql beginning ---')
+  await generateResult(musicInfoList)
+  console.log('--- generate sql completed ---')
+
+  //6. 上传到文件服务器
   console.log('--- upload beginning ---')
   const upload = new UploadBase()
   const bucket = await upload.listObjects()
   for (const musicInfo of musicInfoList) {
     try {
-      const isExist = bucket.find((item) => item.name === musicInfo.id + '.mp3')
-      if (isExist) {
+      if (bucket.find((item) => item.name === musicInfo.id + '.mp3')) {
         console.log('File already exists :', musicInfo.title)
         continue
       }
@@ -71,7 +75,6 @@ async function exec() {
   console.log('--- upload completed ---')
   console.log('--- ---')
 
-  //6.生成sql数据
   console.log('--- exec completed ---')
 }
 

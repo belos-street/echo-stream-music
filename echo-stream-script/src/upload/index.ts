@@ -7,10 +7,10 @@ export class UploadBase {
 
   constructor() {
     this.minioClient = new Minio.Client({
-      endPoint: 'localhost',
+      endPoint: process.env.MY_SERVER_IP || 'localhost', //读环境变量
       port: 9000,
       useSSL: false,
-      accessKey: 'echo-stream',
+      accessKey: 'root',
       secretKey: process.env.MYSQL_PASSWORD as string //这里把秘钥设置成了mysql的密码
     })
   }
