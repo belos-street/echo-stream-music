@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "generate": "ts-node src/generate/index.ts",
     "build": "esbuild src/index.ts --bundle --platform=node --minify --outfile=dist/index.js",
     "type-check": "tsc --noEmit"
   },

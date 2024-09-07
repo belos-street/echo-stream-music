@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm'
+import { Entity, Column, CreateDateColumn, PrimaryColumn } from 'typeorm'
 
 /** 歌手 */
 @Entity('artists')
 export class ArtistEntity {
-  @PrimaryGeneratedColumn({ comment: '歌手表主键' })
+  @PrimaryColumn({ type: 'int', comment: '歌手表主键' })
   id: number
 
   @Column({ type: 'varchar', length: 30, comment: '歌手名' })

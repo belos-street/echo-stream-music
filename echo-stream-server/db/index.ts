@@ -4,7 +4,7 @@ import { entities } from './entities'
 //初始化 ORM映射
 export const InitTypeOrmModule = TypeOrmModule.forRoot({
   type: 'mysql',
-  host: 'localhost',
+  host: process.env.MY_SERVER_IP,
   port: 3306,
   username: 'root',
   password: process.env.MYSQL_PASSWORD, //请配置环境变量MYSQL_PASSWORD 数据库密码

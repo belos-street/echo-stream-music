@@ -4,7 +4,7 @@ import { join } from 'path'
 import { launch } from 'puppeteer'
 import { analyzeWebsite } from './analyze'
 import { UploadBase } from './upload'
-import { generateResult } from './generate'
+import { generateResult } from './generate/generate-result'
 
 export type SongInfo = {
   coverUrl: string
@@ -49,9 +49,9 @@ async function exec() {
   console.log('--- download completed ---')
 
   //5.生成爬虫数据
-  console.log('--- generate sql beginning ---')
+  console.log('--- generate beginning ---')
   await generateResult(musicInfoList)
-  console.log('--- generate sql completed ---')
+  console.log('--- generate completed ---')
 
   //6. 上传到文件服务器
   console.log('--- upload beginning ---')
