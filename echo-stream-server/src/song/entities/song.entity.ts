@@ -10,7 +10,7 @@ export class SongEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'varchar', length: 30, comment: '歌曲标题' })
+  @Column({ length: 100, comment: '歌曲标题' })
   title: string
 
   @Column({ name: 'file_url', length: 255, comment: '歌曲文件的存储路径' })

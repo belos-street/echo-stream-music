@@ -35,9 +35,11 @@ class Generate {
     this.page = await this.browser.newPage()
   }
 
-  async splitArtist() {
+  installArtistSet() {
     this.musicInfoList.map((item) => this.artistSet.add(item.artist))
+  }
 
+  async splitArtist() {
     let sql = `INSERT INTO artists (id, title, cover_url, biography) VALUES\n`
 
     let index = 1
@@ -116,97 +118,34 @@ class Generate {
     )
     console.log(genreMap)
   }
+
+  async writeSongs() {
+    const artistList = [...this.artistSet]
+
+    let sql = `INSERT INTO songs (title, file_url, lyrics_url, cover_url, duration, artist_id, album_id, genre_id) VALUES\n`
+    for (let index = 0; index < this.musicInfoList.length; index++) {
+      const song = this.musicInfoList[index]
+      sql += ` ('${song.title.replace(/'/g, "''")}', '${song.id}.mp3', '${song.id}.lrc', '${song.id}.jpg', ${
+        song.duration
+      }, ${findArtistIndex(song.artist)}, ${0}, ${song.genre})${index === this.musicInfoList.length - 1 ? '' : ','}\n`
+    }
+
+    function findArtistIndex(name: string) {
+      let index = artistList.findIndex((item) => item === name)
+      return index === -1 ? 0 : index + 1
+    }
+
+    console.log(sql)
+  }
 }
 
 async function bootStrap() {
   const generate = new Generate()
   await generate.readResult()
-  await generate.initBrowser()
-  generate.splitArtist()
+  generate.installArtistSet()
+  await generate.writeSongs()
+  // await generate.initBrowser()
+  // await generate.splitArtist()
 }
 
 bootStrap()
-
-// INSERT INTO artists (id, title) VALUES
-//  (1, '陈奕迅'),
-//  (2, 'Carpenters'),
-//  (3, '阿兰'),
-//  (4, 'Laura Shigihara'),
-//  (5, 'DJ Okawari'),
-//  (6, 'EGOIST'),
-//  (7, 'Eminem'),
-//  (8, '陈粒'),
-//  (9, '高橋李依'),
-//  (10, 'GRe4N BOYZ'),
-//  (11, 'ハンバート ハンバート'),
-//  (12, 'ESti'),
-//  (13, 'iris'),
-//  (14, 'Nik Ammar'),
-//  (15, 'Syd Matters'),
-//  (16, 'José González'),
-//  (17, 'Angus & Julia Stone'),
-//  (18, 'Bright Eyes'),
-//  (19, 'Jonathan Morali'),
-//  (20, '野水伊織'),
-//  (21, '涼海ネモ'),
-//  (22, '阿澄佳奈'),
-//  (23, '海援队'),
-//  (24, 'お月さま交響曲'),
-//  (25, '羽毛田丈史'),
-//  (26, 'Mirolke'),
-//  (27, '若草恵'),
-//  (28, 'Aftergrow'),
-//  (29, '春野杉卉'),
-//  (30, '初音ミク'),
-//  (31, '西木康智'),
-//  (32, 'MANYO'),
-//  (33, 'Dios'),
-//  (34, 'AWOLNATION'),
-//  (35, 'XXXTENTACION'),
-//  (36, '陈光荣'),
-//  (37, '崔健'),
-//  (38, 'Queen'),
-//  (39, 'Michael Kaneko'),
-//  (40, '関口シンゴ'),
-//  (41, 'Mabanua'),
-//  (42, 'w8'),
-//  (43, '周深'),
-//  (44, 'Rosa Walton'),
-//  (45, '赵雷'),
-//  (46, '重音テトSV'),
-//  (47, 'HOYO-MiX'),
-//  (48, '陈致逸'),
-//  (49, 'Joshua Radin'),
-//  (50, '王菲'),
-//  (51, '洛天依Official'),
-//  (52, 'Hanser'),
-//  (53, '茶理理'),
-//  (54, '手嶌葵'),
-//  (55, 'Doris Day'),
-//  (56, '小林未郁'),
-//  (57, '橋本潮'),
-//  (58, 'BLU-SWING'),
-//  (59, 'San Holo'),
-//  (60, 'Christina Grimmie'),
-//  (61, 'Nelly'),
-//  (62, 'Fine乐团'),
-//  (63, '南壽あさ子'),
-//  (64, 'Nirvana'),
-//  (65, 'Radiohead'),
-//  (66, '竹内まりや'),
-//  (67, 'Agnes Obel'),
-//  (68, 'Sarah Brightman'),
-//  (69, '蛙池'),
-//  (70, '久石譲'),
-//  (71, 'Pixies'),
-//  (72, 'ヘクとパスカル'),
-//  (73, '大橋トリオ'),
-//  (74, '卡奇社'),
-//  (75, 'アナログフィッシュ'),
-//  (76, 'きのこ帝国'),
-//  (77, 'H△G'),
-//  (78, '樹莓蛋奶酥'),
-//  (79, 'めありー'),
-//  (80, '鹿乃'),
-//  (81, '岩田恭明'),
-//  (82, '有里知花')
