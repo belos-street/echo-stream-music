@@ -9,7 +9,7 @@ import { ArtistEntity } from './entities/artist.entity'
 import { GenreEntity } from './entities/genre.entity'
 
 @Module({
-  //imports: [TypeOrmModule.forFeature([SongEntity, HistoryEntity, FavoriteEntity, ArtistEntity, GenreEntity])],
+  imports: [TypeOrmModule.forFeature([ArtistEntity])],
   controllers: [SongController],
   providers: [SongService]
 })

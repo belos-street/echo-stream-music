@@ -3,7 +3,8 @@ import { SongService } from './song.service'
 import { LoginGuard } from 'src/user/src/login.guard'
 import { MarkFavoriteDto } from './dto/mark.dto'
 import { GetArtistInfoDto } from './dto/artist.dto'
-// @UseGuards(LoginGuard)
+
+@UseGuards(LoginGuard)
 @Controller('song')
 export class SongController {
   constructor(private readonly songService: SongService) {}
@@ -23,7 +24,6 @@ export class SongController {
   //查看歌手的信息
   @Get('artist')
   async getArtistInfo(@Query() dto: GetArtistInfoDto) {
-    console.log(dto)
-    return this.songService.getArtistInfo(dto)
+    return await this.songService.getArtistInfo(dto)
   }
 }
