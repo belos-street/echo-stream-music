@@ -7,7 +7,6 @@ export class RegisterUserDto {
   username: string
 
   @Length(1, 8)
-  @Matches(/^[a-zA-Z0-9#$%_-]+$/, { message: '昵称只能是字母、数字或者 #、$、%、_、- 这些字符' })
   @IsNotEmpty({ message: '昵称不能为空' })
   nickName: string
 
