@@ -7,3 +7,5 @@ export class MarkFavoriteDto {
   @IsNotEmpty({ message: '用户ID不能为空' })
   userId: number
 }
+
+//
