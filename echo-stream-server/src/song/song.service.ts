@@ -9,7 +9,7 @@ import { UserEntity } from 'src/user/entities/user.entity'
 import { SongEntity } from './entities/song.entity'
 import { successResponse } from 'util/apiResponse'
 import { GetFavoritesDto } from './dto/favorites.dto'
-import { SearchDto } from './dto/search.dto'
+import { SearchDto, SearchType } from './dto/search.dto'
 
 @Injectable()
 export class SongService {
@@ -39,11 +39,19 @@ export class SongService {
   async search(dto: SearchDto) {
     const keyword = `%${dto.keyword}%`
 
-    console.log(dto)
+    if (dto.type === SearchType.Artist) {
+      const [artists, artistsCount] = await this.artistRepository.findAndCount({
+        where: [{ title: ILike(keyword) }]
+      })
+      return successResponse({
+        artists,
+        total: artistsCount
+      })
+    }
+
     const [songs, songsCount] = await this.songRepository.findAndCount({
       where: [{ title: ILike(keyword) }]
     })
-
     return successResponse({
       songs,
       total: songsCount
