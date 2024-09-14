@@ -2,12 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { MarkFavoriteDto } from './dto/mark.dto'
 import { GetArtistInfoDto } from './dto/artist.dto'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { ILike, Repository } from 'typeorm'
 import { ArtistEntity } from './entities/artist.entity'
 import { FavoriteEntity } from './entities/favorite.entity'
 import { UserEntity } from 'src/user/entities/user.entity'
 import { SongEntity } from './entities/song.entity'
 import { successResponse } from 'util/apiResponse'
+import { GetFavoritesDto } from './dto/favorites.dto'
+import { SearchDto } from './dto/search.dto'
 
 @Injectable()
 export class SongService {
@@ -20,18 +22,47 @@ export class SongService {
   @InjectRepository(SongEntity)
   private songRepository: Repository<SongEntity>
 
-  async markAsFavorite(dto: MarkFavoriteDto) {
-    // 检查用户是否存在
-    const user = await this.userRepository.findOne({ where: { id: dto.userId } })
-    if (!user) {
-      throw new HttpException(`User ID ${dto.userId} not found`, HttpStatus.NOT_FOUND)
-    }
+  // 检查用户是否存在
+  async checkUserExists(userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } })
+    if (!user) throw new HttpException(`User ID ${userId} not found`, HttpStatus.NOT_FOUND)
+    return user
+  }
 
-    // 检查歌曲是否存在
-    const song = await this.songRepository.findOne({ where: { id: dto.songId } })
-    if (!song) {
-      throw new HttpException(`Song ID ${dto.songId} not found`, HttpStatus.NOT_FOUND)
-    }
+  // 检查歌曲是否存在
+  async checkSongExists(songId: number) {
+    const song = await this.songRepository.findOne({ where: { id: songId } })
+    if (!song) throw new HttpException(`Song ID ${songId} not found`, HttpStatus.NOT_FOUND)
+    return song
+  }
+
+  async search(dto: SearchDto) {
+    const keyword = `%${dto.keyword}%`
+
+    console.log(dto)
+    const [songs, songsCount] = await this.songRepository.findAndCount({
+      where: [{ title: ILike(keyword) }]
+    })
+
+    return successResponse({
+      songs,
+      total: songsCount
+    })
+  }
+
+  async getFavoriteSongs(dto: GetFavoritesDto) {
+    await this.checkUserExists(dto.userId)
+    const favorites = await this.favoriteRepository.find({
+      where: { user: { id: dto.userId } },
+      relations: ['song'] // 加载关联的歌曲
+    })
+    const songList = favorites.map((favorite) => favorite.song)
+    return successResponse(songList)
+  }
+
+  async markAsFavorite(dto: MarkFavoriteDto) {
+    const user = await this.checkUserExists(dto.userId)
+    const song = await this.checkSongExists(dto.songId)
 
     // 检查是否已经收藏
     const existingFavorite = await this.favoriteRepository.findOne({
@@ -39,12 +70,12 @@ export class SongService {
     })
     if (existingFavorite) {
       const result = await this.favoriteRepository.remove(existingFavorite)
-      return successResponse(result, '取消收藏成功')
-    } else {
-      const favorite = this.favoriteRepository.create({ user, song })
-      const result = await this.favoriteRepository.save(favorite)
-      return successResponse(result)
+      return successResponse(result, 'Unfavorited successfully')
     }
+
+    const favorite = this.favoriteRepository.create({ user, song })
+    const result = await this.favoriteRepository.save(favorite)
+    return successResponse(result, 'Favorited successfully')
   }
 
   async getArtistInfo(dto: GetArtistInfoDto) {
