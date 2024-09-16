@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Post, Res, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Post, Query, Res, UseGuards } from '@nestjs/common'
 import { UserService } from './user.service'
 import { RegisterUserDto } from './dto/register-user.dto'
 import { JwtService } from '@nestjs/jwt'
@@ -37,7 +37,8 @@ export class UserController {
 
   @Get('info')
   @UseGuards(LoginGuard)
-  async info(@Param() infoUserDto: InfoUserDto) {
+  async info(@Query() infoUserDto: InfoUserDto) {
+    console.log(infoUserDto)
     return await this.userService.getUserInfo(infoUserDto)
   }
 }

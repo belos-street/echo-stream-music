@@ -4,15 +4,14 @@ import { HeaderBar } from './layout/header-bar'
 import { MusicBar } from './layout/music-bar'
 import { MusicList } from './page/music-list'
 import { Button } from 'antd'
-import { userLoginRequest } from './server/api/user'
+import { userInfoRequest } from './server/api/user'
 
 import { Daily } from './page/daily'
 
 //继续封装请求器
 function clickTest() {
-  userLoginRequest({
-    username: 'jiangzhi',
-    password: '1qaz2WSX'
+  userInfoRequest({
+    id: 1
   }).then((res) => {
     console.log(res, 'okkkkkkk')
   })

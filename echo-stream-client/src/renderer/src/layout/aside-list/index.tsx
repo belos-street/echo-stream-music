@@ -2,8 +2,20 @@ import { DownloadOutlined, HeartOutlined, UserOutlined } from '@ant-design/icons
 import { DailyIcon, MusicIcon, AddIcon, MusicListIcon, RecentlyPlayedIcon } from '@icons/'
 import { Avatar } from 'antd'
 import { ListItem } from './list-item'
+import { userInfoRequest } from '@renderer/server/api/user'
+import { useEffect } from 'react'
 
 export function AsideList(): JSX.Element {
+  // const userInfo = {}
+
+  userInfoRequest({
+    id: 1
+  }).then((res) => {
+    console.log(res)
+  })
+
+  useEffect(() => {}, [])
+
   return (
     <aside className="w-200 bg-neutral-900 flex flex-col h-full">
       <section className="flex items-center gap-12 px-12 mt-12">

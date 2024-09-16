@@ -1,10 +1,13 @@
 import { http } from '@renderer/server'
 import { baseUrl } from '..'
-import { UserLogin } from '@renderer/type/user'
+import { UserInfo, UserInfoReq, UserLogin } from '@renderer/type/user'
 
 const api = {
-  login: `${baseUrl}/users/login`,
-  register: `${baseUrl}/users/register`
+  login: `${baseUrl}/user/login`,
+  register: `${baseUrl}/user/register`,
+  info: `${baseUrl}/user/info`
 }
 
 export const userLoginRequest = (data: UserLogin) => http.post<{ data: number }>(api.login, data)
+
+export const userInfoRequest = (data: UserInfoReq) => http.get<UserInfo>(api.info, { params: data })

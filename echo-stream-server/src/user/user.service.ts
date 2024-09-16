@@ -61,11 +61,12 @@ export class UserService {
   }
 
   async getUserInfo(infoUserDto: InfoUserDto) {
+    console.log(infoUserDto, '---')
     const user = await this.userRepository.findOne({
       where: { id: infoUserDto.id },
       select: ['id', 'username', 'nickName', 'email', 'headPic']
     })
-
+    console.log(user, '---')
     if (!user) {
       throw new HttpException('The user does not exist', HttpStatus.BAD_REQUEST)
     }
