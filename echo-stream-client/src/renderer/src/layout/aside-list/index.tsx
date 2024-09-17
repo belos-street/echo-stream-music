@@ -1,26 +1,33 @@
-import { DownloadOutlined, HeartOutlined, UserOutlined } from '@ant-design/icons'
+import { DownloadOutlined, HeartOutlined } from '@ant-design/icons'
 import { DailyIcon, MusicIcon, AddIcon, MusicListIcon, RecentlyPlayedIcon } from '@icons/'
 import { Avatar } from 'antd'
 import { ListItem } from './list-item'
 import { userInfoRequest } from '@renderer/server/api/user'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { UserInfo } from '@renderer/type/user'
 
 export function AsideList(): JSX.Element {
-  // const userInfo = {}
-
-  userInfoRequest({
-    id: 1
-  }).then((res) => {
-    console.log(res)
+  const [userInfo, setUserInfo] = useState<UserInfo>({
+    id: 0,
+    username: '',
+    nickName: '',
+    email: '',
+    headPic: ''
   })
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    userInfoRequest({ id: 1 }).then((res) => {
+      setUserInfo(res)
+      console.log(res)
+    })
+  }, [])
 
   return (
     <aside className="w-200 bg-neutral-900 flex flex-col h-full">
       <section className="flex items-center gap-12 px-12 mt-12">
-        <Avatar size={32} icon={<UserOutlined />} />
-        <span className="text-14 font-bold">用户名</span>
+        <Avatar size={32} src={userInfo.headPic} />
+
+        <span className="text-14 font-bold">{userInfo.nickName}</span>
       </section>
       <ul className="mt-16 text-14 font-bold px-0">
         <ListItem name="发现音乐" route="/" icon={<MusicIcon className="mr-8 " />} />

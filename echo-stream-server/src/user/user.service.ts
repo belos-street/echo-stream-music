@@ -5,6 +5,7 @@ import { Repository } from 'typeorm'
 import { UserEntity } from './entities/user.entity'
 import { LoginUserDto } from './dto/login-user.dto'
 import { InfoUserDto } from './dto/info-user.dto'
+import { BucketService } from 'buckets'
 
 @Injectable()
 export class UserService {
@@ -61,15 +62,17 @@ export class UserService {
   }
 
   async getUserInfo(infoUserDto: InfoUserDto) {
-    console.log(infoUserDto, '---')
     const user = await this.userRepository.findOne({
       where: { id: infoUserDto.id },
       select: ['id', 'username', 'nickName', 'email', 'headPic']
     })
-    console.log(user, '---')
+
     if (!user) {
       throw new HttpException('The user does not exist', HttpStatus.BAD_REQUEST)
     }
+
+    const url = await new BucketService().getFileUrl(user.headPic)
+    user.headPic = url
 
     return user
   }

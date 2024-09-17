@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { SongService } from './song.service'
-import { LoginGuard } from 'src/user/src/login.guard'
+//import { LoginGuard } from 'src/user/src/login.guard'
 import { MarkFavoriteDto } from './dto/mark.dto'
 import { GetArtistInfoDto } from './dto/artist.dto'
 import { GetFavoritesDto } from './dto/favorites.dto'
 import { SearchDto } from './dto/search.dto'
 
-@UseGuards(LoginGuard)
+//@UseGuards(LoginGuard)
 @Controller('song')
 export class SongController {
   constructor(private readonly songService: SongService) {}

@@ -17,6 +17,7 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
+      nodeIntegration: false, //可以方便地访问 Node.js 功能，但要谨慎考虑安全性和性能影响
       contextIsolation: true //这意味着渲染进程将运行在一个隔离的环境中,需要使用 contextBridge 来安全地暴露所需的 API
     },
     titleBarStyle: 'hidden'

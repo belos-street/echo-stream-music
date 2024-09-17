@@ -6,7 +6,7 @@ import { LoginUserDto } from './dto/login-user.dto'
 import type { Response } from 'express'
 import { successResponse } from 'util/apiResponse'
 import { InfoUserDto } from './dto/info-user.dto'
-import { LoginGuard } from './src/login.guard'
+//import { LoginGuard } from './src/login.guard'
 
 @Controller('user')
 export class UserController {
@@ -36,9 +36,8 @@ export class UserController {
   }
 
   @Get('info')
-  @UseGuards(LoginGuard)
+  // @UseGuards(LoginGuard)
   async info(@Query() infoUserDto: InfoUserDto) {
-    console.log(infoUserDto)
     return await this.userService.getUserInfo(infoUserDto)
   }
 }
