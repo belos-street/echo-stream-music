@@ -13,7 +13,7 @@ function App(): JSX.Element {
       <HeaderBar />
       <div className="flex-1 flex">
         <AsideList />
-        <main>
+        <main className="w-full h-full">
           <Routes>
             <Route path="/" element={<h1>111</h1>} />
             <Route path="/daily" element={<Daily />} />
