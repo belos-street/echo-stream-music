@@ -16,7 +16,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         token: {
           colorPrimary: '#00F268',
           borderRadius: 12
-        }
+        },
+        components: {}
       }}
     >
       <Router>
