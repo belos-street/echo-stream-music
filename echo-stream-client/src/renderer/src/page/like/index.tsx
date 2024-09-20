@@ -1,69 +1,61 @@
 import { HeartFilled, PlayCircleOutlined, DownloadOutlined } from '@ant-design/icons'
+import { songGetFavoritesRequest } from '@renderer/server/api/music'
 import { useUserStore } from '@renderer/store/useUserStore'
+import { Song } from '@renderer/type/song'
 import { Button, Divider, Table, TableColumnsType, Tag } from 'antd'
+import { useEffect, useState } from 'react'
 
-interface DataType {
-  key: React.Key
-  name: string
-  age: number
-  address: string
-}
+const columns: TableColumnsType<Song> = [
+  {
+    title: '',
+    dataIndex: 'operate',
+    key: 'operate',
+    width: 120,
+    render: (_, record) => {
+      return (
+        <>
+          <div className="flex gap-12 justify-end pr-4">
+            <div>{record.index! < 10 ? `0${record.index}` : record.index}</div>
+            <HeartFilled className="cursor-pointer c-red" />
+            <DownloadOutlined className="cursor-pointer" />
+          </div>
+        </>
+      )
+    }
+  },
+  {
+    title: '音乐标题',
+    dataIndex: 'title',
+    key: 'title',
+    ellipsis: true
+  },
+  {
+    title: '歌手',
+    dataIndex: 'coverUrl',
+    key: 'coverUrl',
+    ellipsis: true
+  },
+  {
+    title: '时长',
+    dataIndex: 'duration',
+    key: 'duration',
+    width: 100,
+    ellipsis: true
+  }
+]
 
 export function Like(): JSX.Element {
   const { user } = useUserStore()
-  const dataSource = [
-    {
-      key: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号'
-    },
-    {
-      key: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖西湖区湖底公园1号西湖区湖底公园1号区湖底公园1号'
-    }
-  ]
+  const [dataSource, setDataSource] = useState<Song[]>([])
 
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: '',
-      dataIndex: 'operate',
-      key: 'operate',
-      width: 120,
-      render: (_, record) => {
-        return (
-          <>
-            <div className="flex gap-12 justify-end pr-4">
-              <div>{record.age}</div>
-              <HeartFilled className="cursor-pointer c-red" />
-              <DownloadOutlined className="cursor-pointer" />
-            </div>
-          </>
-        )
-      }
-    },
-    {
-      title: '音乐标题',
-      dataIndex: 'name',
-      key: 'name',
-      ellipsis: true
-    },
-    {
-      title: '歌手',
-      dataIndex: 'age',
-      key: 'age',
-      ellipsis: true
-    },
-    {
-      title: '时长',
-      dataIndex: 'address',
-      key: 'address',
-      width: 100,
-      ellipsis: true
-    }
-  ]
+  useEffect(() => {
+    songGetFavoritesRequest({
+      userId: user.id
+    }).then((res) => {
+      console.log(res)
+      setDataSource(res)
+    })
+  }, [user])
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -85,7 +77,7 @@ export function Like(): JSX.Element {
       </div>
       <Divider className="mt-18 mb-8 px-30" />
       <div>
-        <Table dataSource={dataSource} columns={columns} size="small" />
+        <Table dataSource={dataSource} columns={columns} size="small" key="index" />
       </div>
     </div>
   )

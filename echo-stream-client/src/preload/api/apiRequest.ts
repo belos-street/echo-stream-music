@@ -19,16 +19,24 @@ export function apiRequest<T>(
     electronAPI.ipcRenderer.send(IPCEvent['api:request'], method, api, config)
 
     // Listen for the response
-    electronAPI.ipcRenderer.once(IPCEvent['api:response'], (_event, response) => {
-      if (response.error) {
-        reject(response)
-        message.error(response.message)
-
-        //处理业务code报错
-        // if (response.statusCode) {
-        // }
+    electronAPI.ipcRenderer.once(IPCEvent['api:response'], (_event, res) => {
+      if (res.error) {
+        const error = res.error
+        if (error.response === 'Bad Request') {
+          //说明请求已经发出但没有收到响应 或 设置请求时发生了错误
+          console.error('No response received or Error setting up request')
+          message.error('Request failed')
+          reject(res)
+        } else {
+          message.error(`${error.statusCode} - ${error.message}`)
+          reject(res)
+          //处理业务code报错
+          // if (.statusCode) {
+          // }
+        }
       } else {
-        resolve(response)
+        //success
+        resolve(res.data)
       }
     })
   })

@@ -64,7 +64,7 @@ export class SongService {
       where: { user: { id: dto.userId } },
       relations: ['song'] // 加载关联的歌曲
     })
-    const songList = favorites.map((favorite) => favorite.song)
+    const songList = favorites.map((favorite) => favorite.song).map((song, index) => ({ ...song, index: index + 1 }))
     return successResponse(songList)
   }
 

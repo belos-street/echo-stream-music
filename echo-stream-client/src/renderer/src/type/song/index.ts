@@ -10,4 +10,5 @@ export type Song = {
   coverUrl: string
   duration: number
   createTime: string
+  index?: number
 }

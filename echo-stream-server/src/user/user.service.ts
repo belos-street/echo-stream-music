@@ -6,6 +6,7 @@ import { UserEntity } from './entities/user.entity'
 import { LoginUserDto } from './dto/login-user.dto'
 import { InfoUserDto } from './dto/info-user.dto'
 import { BucketService } from 'buckets'
+import { successResponse } from 'util/apiResponse'
 
 @Injectable()
 export class UserService {
@@ -73,7 +74,6 @@ export class UserService {
 
     const url = await new BucketService().getFileUrl(user.headPic)
     user.headPic = url
-
-    return user
+    return successResponse(user)
   }
 }
