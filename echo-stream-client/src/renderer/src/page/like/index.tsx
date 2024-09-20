@@ -1,4 +1,5 @@
 import { HeartFilled, PlayCircleOutlined, DownloadOutlined } from '@ant-design/icons'
+import { useUserStore } from '@renderer/store/useUserStore'
 import { Button, Divider, Table, TableColumnsType, Tag } from 'antd'
 
 interface DataType {
@@ -9,6 +10,7 @@ interface DataType {
 }
 
 export function Like(): JSX.Element {
+  const { user } = useUserStore()
   const dataSource = [
     {
       key: '1',
@@ -70,7 +72,7 @@ export function Like(): JSX.Element {
         <div className="flex-1 flex flex-col gap-20">
           <div className="text-22 font-bold flex items-center ">
             <Tag color="green">歌单</Tag>
-            我喜欢的音乐
+            我喜欢的音乐 {user.id}
           </div>
           <div className="text-12  text-neutral-400">2024-08-21 创建</div>
           <div>

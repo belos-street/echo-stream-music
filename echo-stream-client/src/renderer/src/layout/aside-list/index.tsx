@@ -3,31 +3,24 @@ import { DailyIcon, MusicIcon, AddIcon, MusicListIcon, RecentlyPlayedIcon } from
 import { Avatar } from 'antd'
 import { ListItem } from './list-item'
 import { userInfoRequest } from '@renderer/server/api/user'
-import { useEffect, useState } from 'react'
-import { UserInfo } from '@renderer/type/user'
+import { useEffect } from 'react'
+import { useUserStore } from '@renderer/store/useUserStore'
 
 export function AsideList(): JSX.Element {
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    id: 0,
-    username: '',
-    nickName: '',
-    email: '',
-    headPic: ''
-  })
+  const { user, setUser } = useUserStore()
 
   useEffect(() => {
     userInfoRequest({ id: 1 }).then((res) => {
-      setUserInfo(res)
-      console.log(res)
+      setUser(res)
     })
   }, [])
 
   return (
     <aside className="w-200 bg-neutral-900 flex flex-col h-full">
       <section className="flex items-center gap-12 px-12 mt-12">
-        <Avatar size={32} src={userInfo.headPic} />
+        <Avatar size={32} src={user.headPic} />
 
-        <span className="text-14 font-bold">{userInfo.nickName}</span>
+        <span className="text-14 font-bold">{user.nickName}</span>
       </section>
       <ul className="mt-16 text-14 font-bold px-0">
         <ListItem name="发现音乐" route="/" icon={<MusicIcon className="mr-8 " />} />

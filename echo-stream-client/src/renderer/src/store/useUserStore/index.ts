@@ -14,8 +14,7 @@ const initUserInfo: UserInfo = {
   headPic: ''
 }
 
-
-export const useUserStore = create<UserStore>((set) => {
-  user: {...initUserInfo},
-setUser: (user: UserInfo) => set({ user })
-})
+export const useUserStore = create<UserStore>((set) => ({
+  user: initUserInfo,
+  setUser: (user: UserInfo) => set({ user })
+}))
