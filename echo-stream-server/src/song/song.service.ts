@@ -62,11 +62,17 @@ export class SongService {
     await this.checkUserExists(dto.userId)
     const favorites = await this.favoriteRepository.find({
       where: { user: { id: dto.userId } },
-      relations: ['song'] // 加载关联的歌曲
+      relations: ['song', 'song.artist'] // 加载关联的歌曲
     })
-    const songList = favorites.map((favorite) => favorite.song).map((song, index) => ({ ...song, index: index + 1 }))
-   
-    //获取所有的minio数据，获取封面地址
+    const songList = favorites
+      .map((favorite) => favorite.song)
+      .map((song, index) => ({ ...song, index: index + 1 }))
+      .map((song) => ({
+        ...song,
+        artistId: song.artist.id,
+        artist: song.artist.title
+      }))
+
     return successResponse(songList)
   }
 

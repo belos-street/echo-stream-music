@@ -11,4 +11,14 @@ export type Song = {
   duration: number
   createTime: string
   index?: number
+  artist: string
+  artistId: number
+}
+
+export type Artist = {
+  biography: string
+  coverUrl: string
+  createTime: string
+  id: number
+  title: string
 }

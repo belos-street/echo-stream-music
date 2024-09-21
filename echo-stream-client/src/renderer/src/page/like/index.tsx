@@ -1,4 +1,5 @@
 import { HeartFilled, PlayCircleOutlined, DownloadOutlined } from '@ant-design/icons'
+import { MinioUrl } from '@renderer/config'
 import { songGetFavoritesRequest } from '@renderer/server/api/music'
 import { useUserStore } from '@renderer/store/useUserStore'
 import { Song } from '@renderer/type/song'
@@ -32,15 +33,16 @@ const columns: TableColumnsType<Song> = [
   },
   {
     title: '歌手',
-    dataIndex: 'coverUrl',
-    key: 'coverUrl',
+    dataIndex: 'artist',
+    key: 'artist',
+    width: 140,
     ellipsis: true
   },
   {
     title: '时长',
     dataIndex: 'duration',
     key: 'duration',
-    width: 100,
+    width: 120,
     ellipsis: true,
     render: (text) => secondsToMinutes(text)
   }
@@ -53,17 +55,14 @@ export function Like(): JSX.Element {
   const [coverUrl, setCoverUrl] = useState<string>('')
 
   useEffect(() => {
-    songGetFavoritesRequest({
-      userId: 1
-    })
+    //获取歌曲列表
+    songGetFavoritesRequest({ userId: user.id })
       .then((res) => {
         setDataSource(res)
-        if (res.length > 0 && res[0].coverUrl) {
-          setCoverUrl(res[0].coverUrl)
-          console.log(res[0].coverUrl)
-        } else {
-          setCoverUrl('')
-        }
+        console.log(res)
+        res.length > 0 && res[0].coverUrl
+          ? setCoverUrl(MinioUrl + res[0].coverUrl)
+          : setCoverUrl('')
       })
       .finally(() => {
         setLoading(false)
@@ -73,13 +72,13 @@ export function Like(): JSX.Element {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex py-12 px-30 gap-30 w-full">
-        <div className="w-200 h-200 bg-blue">
-          <img src={coverUrl} />
+        <div className="w-200 h-200">
+          <img src={coverUrl} className="rd-8 w-full h-full" />
         </div>
         <div className="flex-1 flex flex-col gap-20">
           <div className="text-22 font-bold flex items-center ">
             <Tag color="green">歌单</Tag>
-            我喜欢的音乐 {user.id}
+            我喜欢的音乐
           </div>
           <div className="text-12  text-neutral-400">2024-08-21 创建</div>
           <div>
@@ -100,6 +99,7 @@ export function Like(): JSX.Element {
           rowKey="id"
           className="song-table"
           rowClassName={(_, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
+          pagination={false}
         />
       </div>
     </div>
