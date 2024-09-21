@@ -31,3 +31,17 @@ body {
 .draggable-header__disable {
   -webkit-app-region: no-drag;
 }
+
+.song-table .ant-table-thead th {
+  padding: 4px;
+}
+
+.song-table .even-row {
+  background-color: #252525;
+  /* 偶数行背景色 */
+}
+
+.song-table .odd-row {
+  background-color: #1d1d1d;
+  /* 奇数行背景色 */
+}

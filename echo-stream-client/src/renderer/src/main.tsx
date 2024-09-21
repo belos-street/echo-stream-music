@@ -17,7 +17,15 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           colorPrimary: '#00F268',
           borderRadius: 12
         },
-        components: {}
+        components: {
+          Table: {
+            cellFontSizeSM: 12,
+            cellPaddingInlineSM: 8,
+            cellPaddingBlockSM: 8,
+            borderColor: 'none',
+            headerColor: '#a3a3a3'
+          }
+        }
       }}
     >
       <Router>

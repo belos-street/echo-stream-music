@@ -65,6 +65,8 @@ export class SongService {
       relations: ['song'] // 加载关联的歌曲
     })
     const songList = favorites.map((favorite) => favorite.song).map((song, index) => ({ ...song, index: index + 1 }))
+   
+    //获取所有的minio数据，获取封面地址
     return successResponse(songList)
   }
 

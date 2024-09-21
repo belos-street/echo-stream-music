@@ -2,6 +2,7 @@ import { HeartFilled, PlayCircleOutlined, DownloadOutlined } from '@ant-design/i
 import { songGetFavoritesRequest } from '@renderer/server/api/music'
 import { useUserStore } from '@renderer/store/useUserStore'
 import { Song } from '@renderer/type/song'
+import { secondsToMinutes } from '@renderer/utils'
 import { Button, Divider, Table, TableColumnsType, Tag } from 'antd'
 import { useEffect, useState } from 'react'
 
@@ -40,27 +41,41 @@ const columns: TableColumnsType<Song> = [
     dataIndex: 'duration',
     key: 'duration',
     width: 100,
-    ellipsis: true
+    ellipsis: true,
+    render: (text) => secondsToMinutes(text)
   }
 ]
 
 export function Like(): JSX.Element {
   const { user } = useUserStore()
   const [dataSource, setDataSource] = useState<Song[]>([])
+  const [loading, setLoading] = useState(true)
+  const [coverUrl, setCoverUrl] = useState<string>('')
 
   useEffect(() => {
     songGetFavoritesRequest({
-      userId: user.id
-    }).then((res) => {
-      console.log(res)
-      setDataSource(res)
+      userId: 1
     })
+      .then((res) => {
+        setDataSource(res)
+        if (res.length > 0 && res[0].coverUrl) {
+          setCoverUrl(res[0].coverUrl)
+          console.log(res[0].coverUrl)
+        } else {
+          setCoverUrl('')
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [user])
 
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex py-12 px-30 gap-30 w-full">
-        <div className="w-200 h-200 bg-blue">1</div>
+        <div className="w-200 h-200 bg-blue">
+          <img src={coverUrl} />
+        </div>
         <div className="flex-1 flex flex-col gap-20">
           <div className="text-22 font-bold flex items-center ">
             <Tag color="green">歌单</Tag>
@@ -76,8 +91,16 @@ export function Like(): JSX.Element {
         </div>
       </div>
       <Divider className="mt-18 mb-8 px-30" />
-      <div>
-        <Table dataSource={dataSource} columns={columns} size="small" key="index" />
+      <div className="flex-1">
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          size="small"
+          loading={loading}
+          rowKey="id"
+          className="song-table"
+          rowClassName={(_, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
+        />
       </div>
     </div>
   )

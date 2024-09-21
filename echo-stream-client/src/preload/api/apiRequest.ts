@@ -28,6 +28,7 @@ export function apiRequest<T>(
           message.error('Request failed')
           reject(res)
         } else {
+          //说明请求已经发出并且收到了响应，但是响应的状态码不在200-299之间
           message.error(`${error.statusCode} - ${error.message}`)
           reject(res)
           //处理业务code报错
