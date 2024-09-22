@@ -19,7 +19,8 @@ export function ControlPanel(): JSX.Element {
   const handleVolumeClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const clickX = event.clientX
     const { clientWidth, offsetLeft } = event.currentTarget
-    const volume = Number((((clickX - offsetLeft) / clientWidth) * 100).toFixed(1))
+    let volume = Number((((clickX - offsetLeft) / clientWidth) * 100).toFixed(1))
+    volume < 0 && (volume = 0)
     setVolume(volume)
   }
 

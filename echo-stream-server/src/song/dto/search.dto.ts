@@ -1,4 +1,4 @@
-import { IsEnum, IsString, Length } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator'
 
 export enum SearchType {
   Song = 0,
@@ -12,4 +12,7 @@ export class SearchDto {
 
   @IsEnum(SearchType)
   type: SearchType
+
+  @IsNotEmpty({ message: '用户ID不能为空' })
+  userId: number
 }

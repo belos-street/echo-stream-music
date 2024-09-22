@@ -1,6 +1,7 @@
 import { HeartFilled, PlayCircleOutlined, DownloadOutlined } from '@ant-design/icons'
 import { MinioUrl } from '@renderer/config'
 import { songGetFavoritesRequest } from '@renderer/server/api/music'
+import { useSongStore } from '@renderer/store/useMusicStore'
 import { useUserStore } from '@renderer/store/useUserStore'
 import { Song } from '@renderer/type/song'
 import { secondsToMinutes } from '@renderer/utils'
@@ -69,6 +70,11 @@ export function Like(): JSX.Element {
       })
   }, [user])
 
+  const { setSong } = useSongStore()
+  const handleRowDoubleClick = (record: Song) => {
+    setSong(record)
+  }
+
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex py-12 px-30 gap-30 w-full">
@@ -100,6 +106,11 @@ export function Like(): JSX.Element {
           className="song-table"
           rowClassName={(_, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
           pagination={false}
+          onRow={(record) => {
+            return {
+              onDoubleClick: () => handleRowDoubleClick(record)
+            }
+          }}
         />
       </div>
     </div>

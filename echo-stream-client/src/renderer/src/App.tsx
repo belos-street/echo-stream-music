@@ -6,6 +6,7 @@ import { MusicList } from './page/music-list'
 
 import { Daily } from './page/daily'
 import { Like } from './page/like'
+import { Search } from './page/search'
 
 function App(): JSX.Element {
   return (
@@ -21,6 +22,7 @@ function App(): JSX.Element {
             <Route path="/recently" element={<h1>444</h1>} />
             <Route path="/download" element={<h1>555</h1>} />
             <Route path="/list/:id" element={<MusicList />} />
+            <Route path="/search/:name" element={<Search />} />
           </Routes>
         </main>
       </div>

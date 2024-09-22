@@ -1,10 +1,13 @@
 import { LeftOutlined, RightOutlined, SettingOutlined, SkinOutlined } from '@ant-design/icons'
 import { Input } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 const { Search } = Input
 export function HeaderBar(): JSX.Element {
-  const onSearch = () => {
-    console.log(111)
+  const navigate = useNavigate()
+  const onSearch = (text: string) => {
+    console.log(text)
+    text && navigate(`/search/${text}`)
   }
 
   return (

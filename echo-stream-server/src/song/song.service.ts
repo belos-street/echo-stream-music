@@ -49,11 +49,33 @@ export class SongService {
       })
     }
 
+    await this.checkUserExists(dto.userId)
     const [songs, songsCount] = await this.songRepository.findAndCount({
-      where: [{ title: ILike(keyword) }]
+      where: [{ title: ILike(keyword) }],
+      relations: ['artist']
     })
+
+    //判断是否收藏
+    const userFavorites = await this.favoriteRepository.find({
+      where: { user: { id: dto.userId } },
+      relations: ['song'] // 加载关联的歌曲
+    })
+    const userFavoriteIds = userFavorites.map((favorite) => favorite.song.id)
+
+    const songList = songs
+      .map((song, index) => ({ ...song, index: index + 1 }))
+      .map((song) => ({
+        ...song,
+        artistId: song.artist.id,
+        artist: song.artist.title
+      }))
+      .map((song) => ({
+        ...song,
+        isFavorite: userFavoriteIds.includes(song.id)
+      }))
+
     return successResponse({
-      songs,
+      songs: songList,
       total: songsCount
     })
   }
