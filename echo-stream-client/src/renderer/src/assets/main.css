@@ -32,11 +32,11 @@ body {
   -webkit-app-region: no-drag;
 }
 
-.song-table .ant-table-thead th {
+.ant-table .ant-table-thead th {
   padding: 4px;
 }
 
-.song-table .even-row {
+.ant-table .even-row {
   background-color: #252525;
   /* 偶数行背景色 */
 }
@@ -44,4 +44,8 @@ body {
 .song-table .odd-row {
   background-color: #1d1d1d;
   /* 奇数行背景色 */
+}
+
+.tab-full .ant-tabs-content.ant-tabs-content-top {
+  height: 100%;
 }

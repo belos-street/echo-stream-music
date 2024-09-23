@@ -11,7 +11,7 @@ export function HeaderBar(): JSX.Element {
   }
 
   return (
-    <header className="draggable-header w-screen flex flex-row justify-between h-40 bg-neutral-800">
+    <header className="col-span-2 draggable-header flex flex-row justify-between h-40 bg-neutral-800">
       <div className="w-200 flex flex-items-end justify-end pr-6 gap-24 pb-8">
         <LeftOutlined className="draggable-header__disable cursor-pointer" />
         <RightOutlined className="draggable-header__disable cursor-pointer" />

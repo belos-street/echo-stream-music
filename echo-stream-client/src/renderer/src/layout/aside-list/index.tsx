@@ -16,7 +16,7 @@ export function AsideList(): JSX.Element {
   }, [])
 
   return (
-    <aside className="w-200 bg-neutral-900 flex flex-col h-full">
+    <aside className="row-start-2 col-start-1 row-span-1 col-span-1  bg-neutral-900 flex flex-col h-full">
       <section className="flex items-center gap-12 px-12 mt-12">
         <Avatar size={32} src={user.headPic} />
 

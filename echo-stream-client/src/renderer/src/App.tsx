@@ -11,10 +11,10 @@ import { Search } from './page/search'
 function App(): JSX.Element {
   return (
     <>
-      <HeaderBar />
-      <div className="flex-1 flex">
+      <div className="grid grid-cols-[200px_1fr] grid-rows-[40px_1fr_60px] gap-0 w-full h-full">
+        <HeaderBar />
         <AsideList />
-        <main className="w-full h-full">
+        <main className="row-start-2 col-start-2 row-span-1 col-span-1 overflow-hidden">
           <Routes>
             <Route path="/" element={<h1>111</h1>} />
             <Route path="/daily" element={<Daily />} />
@@ -25,8 +25,8 @@ function App(): JSX.Element {
             <Route path="/search/:name" element={<Search />} />
           </Routes>
         </main>
+        <MusicBar />
       </div>
-      <MusicBar />
     </>
   )
 }

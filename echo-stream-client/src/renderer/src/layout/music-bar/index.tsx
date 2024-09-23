@@ -8,7 +8,7 @@ import { MinioUrl } from '@renderer/config'
 export function MusicBar(): JSX.Element {
   const { song } = useSongStore()
   return (
-    <footer className="w-screen flex flex-col h-60 bg-neutral-900 relative">
+    <footer className="row-start-3 col-start-1 row-span-1 col-span-2 flex flex-col h-60 bg-neutral-900 relative">
       <SliderBar />
       <div className="p-8 h-full flex justify-between">
         <div className="flex gap-8 items-center w-1/3">

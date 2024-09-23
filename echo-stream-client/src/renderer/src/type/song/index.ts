@@ -40,3 +40,12 @@ export type SearchRes = {
   artists: Artist[]
   total: number
 }
+
+export type MarkReq = {
+  songId: number
+  userId: number
+}
+
+export type MarkRes = {
+  id: number
+}
