@@ -10,6 +10,8 @@ import { SongEntity } from './entities/song.entity'
 import { successResponse } from 'util/apiResponse'
 import { GetFavoritesDto } from './dto/favorites.dto'
 import { SearchDto, SearchType } from './dto/search.dto'
+import { MarkHistoryDto } from './dto/history.dto'
+import { HistoryEntity } from './entities/history.entity'
 
 @Injectable()
 export class SongService {
@@ -21,6 +23,8 @@ export class SongService {
   private userRepository: Repository<UserEntity>
   @InjectRepository(SongEntity)
   private songRepository: Repository<SongEntity>
+  @InjectRepository(HistoryEntity)
+  private historyRepository: Repository<HistoryEntity>
 
   // 检查用户是否存在
   async checkUserExists(userId: number) {
@@ -84,6 +88,7 @@ export class SongService {
     await this.checkUserExists(dto.userId)
     const favorites = await this.favoriteRepository.find({
       where: { user: { id: dto.userId } },
+      order: { createTime: 'DESC' },
       relations: ['song', 'song.artist'] // 加载关联的歌曲
     })
     const songList = favorites
@@ -122,5 +127,14 @@ export class SongService {
       throw new HttpException(`Artist with ID ${dto.artistId} not found`, HttpStatus.NOT_FOUND)
     }
     return successResponse(artist)
+  }
+
+  async markHistory(dto: MarkHistoryDto) {
+    const user = await this.checkUserExists(dto.userId)
+    const song = await this.checkSongExists(dto.songId)
+
+    const favorite = this.historyRepository.create({ user, song })
+    const result = await this.historyRepository.save(favorite)
+    return successResponse(result)
   }
 }

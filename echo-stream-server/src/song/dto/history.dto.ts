@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber } from 'class-validator'
 
-export class MarkFavoriteDto {
+export class MarkHistoryDto {
   @IsNotEmpty({ message: '歌曲ID不能为空' })
   @IsNumber({}, { message: '歌曲ID必须是数字类型' })
   songId: number

@@ -111,6 +111,9 @@ export function Like(): JSX.Element {
               onDoubleClick: () => handleRowDoubleClick(record)
             }
           }}
+          scroll={{
+            y: '260px'
+          }}
         />
       </div>
     </div>

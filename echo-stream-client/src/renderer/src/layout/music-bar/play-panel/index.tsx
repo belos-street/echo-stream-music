@@ -6,14 +6,17 @@ import {
   StepForwardOutlined
 } from '@ant-design/icons'
 import { MinioUrl } from '@renderer/config'
+import { addHistoryRequest } from '@renderer/server/api/music'
 import { useSongStore } from '@renderer/store/useMusicStore'
 import { PlayStaus, usePlayStore } from '@renderer/store/usePlayStore'
+import { useUserStore } from '@renderer/store/useUserStore'
 import { useEffect, useRef } from 'react'
 
 export function PlayPanel(): JSX.Element {
   const { status, setStatus, volume, setProgress } = usePlayStore()
   const { song } = useSongStore()
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const { user } = useUserStore()
 
   //初始化播放配置
   useEffect(() => {
@@ -54,10 +57,14 @@ export function PlayPanel(): JSX.Element {
     }
   }
 
-  //切换歌曲，自动播放
+  //切换歌曲，自动播放，同时添加历史记录请求
   useEffect(() => {
     setStatus(PlayStaus.Playing)
     audioRef.current?.play()
+    addHistoryRequest({
+      userId: user.id,
+      songId: song.id
+    })
   }, [song.fileUrl])
 
   //切换上一首/下一首歌曲

@@ -5,7 +5,8 @@ import { FavoriteReq, MarkReq, MarkRes, SearchReq, SearchRes, Song } from '@rend
 const api = {
   favorites: `${baseUrl}/song/favorites`,
   search: `${baseUrl}/song/search`,
-  mark: `${baseUrl}/song/mark`
+  mark: `${baseUrl}/song/mark`,
+  history: `${baseUrl}/song/history`
 }
 
 export const songGetFavoritesRequest = (data: FavoriteReq) =>
@@ -14,3 +15,5 @@ export const songGetFavoritesRequest = (data: FavoriteReq) =>
 export const searchRequest = (data: SearchReq) => http.post<SearchRes>(api.search, data)
 
 export const songMarkRequest = (data: MarkReq) => http.post<MarkRes>(api.mark, data)
+
+export const addHistoryRequest = (data: MarkReq) => http.post(api.history, data)

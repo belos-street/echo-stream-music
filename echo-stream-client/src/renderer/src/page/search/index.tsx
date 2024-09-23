@@ -1,5 +1,6 @@
 import { DownloadOutlined, HeartFilled } from '@ant-design/icons'
 import { searchRequest, songMarkRequest } from '@renderer/server/api/music'
+import { useSongStore } from '@renderer/store/useMusicStore'
 import { useUserStore } from '@renderer/store/useUserStore'
 import { SearchType, Song } from '@renderer/type/song'
 import { secondsToMinutes } from '@renderer/utils'
@@ -14,6 +15,7 @@ export function Search(): JSX.Element {
   const [active, setActive] = useState('song')
 
   /** song table */
+  const { setSong } = useSongStore()
   const [dataSource, setDataSource] = useState<Song[]>([])
 
   const handleSearchRequest = () => {
@@ -93,12 +95,12 @@ export function Search(): JSX.Element {
       rowClassName={(_, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
       pagination={false}
       scroll={{
-        y: '560px'
+        y: '400px'
       }}
       onRow={(record) => {
         return {
           onDoubleClick: () => {
-            console.log(record)
+            setSong(record)
           }
         }
       }}

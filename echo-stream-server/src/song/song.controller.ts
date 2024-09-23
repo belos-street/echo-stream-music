@@ -5,6 +5,7 @@ import { MarkFavoriteDto } from './dto/mark.dto'
 import { GetArtistInfoDto } from './dto/artist.dto'
 import { GetFavoritesDto } from './dto/favorites.dto'
 import { SearchDto } from './dto/search.dto'
+import { MarkHistoryDto } from './dto/history.dto'
 
 //@UseGuards(LoginGuard)
 @Controller('song')
@@ -35,5 +36,11 @@ export class SongController {
   @Get('artist')
   async getArtistInfo(@Query() dto: GetArtistInfoDto) {
     return await this.songService.getArtistInfo(dto)
+  }
+
+  //查看歌手的信息
+  @Post('history')
+  async markHistory(@Body() dto: MarkHistoryDto) {
+    return await this.songService.markHistory(dto)
   }
 }
