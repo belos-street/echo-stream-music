@@ -10,15 +10,18 @@ export function AsideList(): JSX.Element {
   const { user, setUser } = useUserStore()
 
   useEffect(() => {
+    getUserInfo()
+  }, [])
+
+  const getUserInfo = () => {
     userInfoRequest({ id: 1 }).then((res) => {
       setUser(res)
     })
-  }, [])
-
+  }
   return (
     <aside className="row-start-2 col-start-1 row-span-1 col-span-1  bg-neutral-900 flex flex-col h-full">
       <section className="flex items-center gap-12 px-12 mt-12">
-        <Avatar size={32} src={user.headPic} />
+        <Avatar size={32} src={user.headPic} onClick={() => getUserInfo()} />
 
         <span className="text-14 font-bold">{user.nickName}</span>
       </section>
