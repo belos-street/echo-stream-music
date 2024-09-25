@@ -1,56 +1,17 @@
-import { CalendarOutlined, DownloadOutlined, HeartFilled } from '@ant-design/icons'
+import { CalendarOutlined } from '@ant-design/icons'
+import { useTable } from '@renderer/hooks/useTable'
 import { songGetFavoritesRequest } from '@renderer/server/api/music'
 import { useSongStore } from '@renderer/store/useMusicStore'
 import { useUserStore } from '@renderer/store/useUserStore'
 import { Song } from '@renderer/type/song'
-import { secondsToMinutes } from '@renderer/utils'
-import { Table, TableColumnsType } from 'antd'
+import { Table } from 'antd'
 import { useEffect, useState } from 'react'
 
-const columns: TableColumnsType<Song> = [
-  {
-    title: '',
-    dataIndex: 'operate',
-    key: 'operate',
-    width: 120,
-    render: (_, record) => {
-      return (
-        <>
-          <div className="flex gap-12 justify-end pr-4">
-            <div>{record.index! < 10 ? `0${record.index}` : record.index}</div>
-            <HeartFilled className="cursor-pointer c-red" />
-            <DownloadOutlined className="cursor-pointer" />
-          </div>
-        </>
-      )
-    }
-  },
-  {
-    title: '音乐标题',
-    dataIndex: 'title',
-    key: 'title',
-    ellipsis: true
-  },
-  {
-    title: '歌手',
-    dataIndex: 'artist',
-    key: 'artist',
-    width: 140,
-    ellipsis: true
-  },
-  {
-    title: '时长',
-    dataIndex: 'duration',
-    key: 'duration',
-    width: 120,
-    ellipsis: true,
-    render: (text) => secondsToMinutes(text)
-  }
-]
 export function Daily(): JSX.Element {
   const { user } = useUserStore()
   const [dataSource, setDataSource] = useState<Song[]>([])
   const [loading, setLoading] = useState(true)
+  const [columns] = useTable()
 
   useEffect(() => {
     //获取歌曲列表
@@ -71,7 +32,6 @@ export function Daily(): JSX.Element {
     <div>
       <div className="flex items-center p-12 gap-12">
         <CalendarOutlined className="text-64 c-primary" />
-
         <div>
           <div className="font-bold text-24">每日歌曲推荐</div>
           <div className="text-12 text-neutral-500">根据你的音乐口味生成，每天6:00更新</div>
