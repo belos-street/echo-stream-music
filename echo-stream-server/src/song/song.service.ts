@@ -134,7 +134,10 @@ export class SongService {
     const song = await this.checkSongExists(dto.songId)
 
     const favorite = this.historyRepository.create({ user, song })
+
     const result = await this.historyRepository.save(favorite)
     return successResponse(result)
   }
+
+  async recommend() {}
 }
