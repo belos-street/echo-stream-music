@@ -48,11 +48,17 @@ export function Search(): JSX.Element {
                 className={`cursor-pointer ${record.isFavorite ? 'c-red' : ''}`}
                 onClick={(e) => {
                   e.stopPropagation()
+
+                  setDataSource((prevData) =>
+                    prevData.map((item) =>
+                      item.id === record.id ? { ...item, isFavorite: !item.isFavorite } : item
+                    )
+                  )
                   songMarkRequest({
                     userId: user.id,
                     songId: record.id
                   }).then(() => {
-                    handleSearchRequest()
+                    //  handleSearchRequest()
                   })
                 }}
               />

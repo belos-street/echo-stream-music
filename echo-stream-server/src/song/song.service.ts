@@ -12,6 +12,7 @@ import { GetFavoritesDto } from './dto/favorites.dto'
 import { SearchDto, SearchType } from './dto/search.dto'
 import { MarkHistoryDto } from './dto/history.dto'
 import { HistoryEntity } from './entities/history.entity'
+import { RecommendDto } from './dto/recommend.dto'
 
 @Injectable()
 export class SongService {
@@ -139,5 +140,31 @@ export class SongService {
     return successResponse(result)
   }
 
-  async recommend() {}
+  // recommend - history
+  async recommendHistory(dto: RecommendDto) {
+    const result = await this.historyRepository.find({
+      where: { user: { id: dto.userId } },
+      order: { createTime: 'DESC' },
+      take: 100,
+      relations: ['song', 'song.artist']
+    })
+
+    const history = result
+      .map((item) => item.song)
+      .map((song) => ({
+        ...song,
+        artistId: song.artist.id,
+        artist: song.artist.title
+      }))
+
+    return history
+  }
+
+  async recommend(dto: RecommendDto) {
+    //step1 查询该用户的最近100条听歌记录, 统计出现的歌手次数和音乐流派，其中歌手权重分1分，流派权重分为2分
+    await this.checkUserExists(dto.userId)
+    const result = await this.recommendHistory(dto)
+
+    return successResponse(result)
+  }
 }
