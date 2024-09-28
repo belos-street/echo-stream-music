@@ -10,7 +10,7 @@ import { GenreEntity } from './entities/genre.entity'
 import { UserEntity } from 'src/user/entities/user.entity'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ArtistEntity, FavoriteEntity, UserEntity, SongEntity, HistoryEntity])],
+  imports: [TypeOrmModule.forFeature([ArtistEntity, FavoriteEntity, UserEntity, SongEntity, HistoryEntity, GenreEntity])],
   controllers: [SongController],
   providers: [SongService]
 })

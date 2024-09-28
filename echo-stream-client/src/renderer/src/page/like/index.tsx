@@ -92,7 +92,7 @@ export function Like(): JSX.Element {
               播放全部
             </Button>
           </div>
-          <div className="text-12  text-neutral-400">歌曲数：233</div>
+          <div className="text-12  text-neutral-400">歌曲数：{dataSource.length}</div>
         </div>
       </div>
       <Divider className="mt-18 mb-8 px-30" />

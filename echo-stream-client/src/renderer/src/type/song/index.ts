@@ -49,3 +49,7 @@ export type MarkReq = {
 export type MarkRes = {
   id: number
 }
+
+export type RecommendReq = {
+  userId: number
+}

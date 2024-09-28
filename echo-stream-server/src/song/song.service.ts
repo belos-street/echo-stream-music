@@ -13,6 +13,9 @@ import { SearchDto, SearchType } from './dto/search.dto'
 import { MarkHistoryDto } from './dto/history.dto'
 import { HistoryEntity } from './entities/history.entity'
 import { RecommendDto } from './dto/recommend.dto'
+import { GenreEntity } from './entities/genre.entity'
+import { mergeMaps } from './src/mergeMaps'
+import { PreferenceItem, Score } from './src'
 
 @Injectable()
 export class SongService {
@@ -26,7 +29,6 @@ export class SongService {
   private songRepository: Repository<SongEntity>
   @InjectRepository(HistoryEntity)
   private historyRepository: Repository<HistoryEntity>
-
   // 检查用户是否存在
   async checkUserExists(userId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } })
@@ -146,25 +148,215 @@ export class SongService {
       where: { user: { id: dto.userId } },
       order: { createTime: 'DESC' },
       take: 100,
-      relations: ['song', 'song.artist']
+      relations: ['song', 'song.artist', 'song.genre']
     })
 
-    const history = result
+    const favorites = result
       .map((item) => item.song)
       .map((song) => ({
         ...song,
         artistId: song.artist.id,
         artist: song.artist.title
       }))
+      .map((song) => ({
+        ...song,
+        genreId: song.genre.id,
+        genre: song.genre.name
+      }))
 
-    return history
+    const genreMap = new Map<number, number>()
+    const artistMap = new Map<number, number>()
+    for (const song of favorites) {
+      const artistId = song.artistId,
+        genreId = song.genreId
+      if (artistMap.has(artistId)) {
+        artistMap.set(artistId, artistMap.get(artistId) + 2)
+      } else {
+        artistMap.set(artistId, 2)
+      }
+      if (genreMap.has(genreId)) {
+        genreMap.set(genreId, genreMap.get(genreId) + 4)
+      } else {
+        genreMap.set(genreId, 4)
+      }
+    }
+    return {
+      artistMap,
+      genreMap
+    }
+  }
+
+  async recommendFavorite(dto: RecommendDto) {
+    const result = await this.favoriteRepository.find({
+      where: { user: { id: dto.userId } },
+      order: { createTime: 'DESC' },
+      take: 100,
+      relations: ['song', 'song.artist', 'song.genre']
+    })
+
+    const favorites = result
+      .map((item) => item.song)
+      .map((song) => ({
+        ...song,
+        artistId: song.artist.id,
+        artist: song.artist.title
+      }))
+      .map((song) => ({
+        ...song,
+        genreId: song.genre.id,
+        genre: song.genre.name
+      }))
+
+    const genreMap = new Map<number, number>()
+    const artistMap = new Map<number, number>()
+    for (const song of favorites) {
+      const artistId = song.artistId,
+        genreId = song.genreId
+      if (artistMap.has(artistId)) {
+        artistMap.set(artistId, artistMap.get(artistId) + 1)
+      } else {
+        artistMap.set(artistId, 1)
+      }
+      if (genreMap.has(genreId)) {
+        genreMap.set(genreId, genreMap.get(genreId) + 2)
+      } else {
+        genreMap.set(genreId, 2)
+      }
+    }
+
+    return {
+      artistMap,
+      genreMap
+    }
+  }
+
+  countPreferences(artistMap: Map<number, number>, genreMap: Map<number, number>): PreferenceItem[] {
+    const artistPreferences: PreferenceItem[] = [],
+      genrePreferences = []
+    for (const item of artistMap) {
+      artistPreferences.push({
+        type: 'artist',
+        value: item[0],
+        score: item[1]
+      })
+    }
+
+    for (const item of genreMap) {
+      genrePreferences.push({
+        type: 'genre',
+        value: item[0],
+        score: item[1]
+      })
+    }
+
+    return [
+      ...artistPreferences.sort((a, b) => b.score - a.score).slice(0, 5),
+      ...genrePreferences.sort((a, b) => b.score - a.score).slice(0, 5)
+    ]
+  }
+
+  async getSongsByPreferences(preferences: PreferenceItem[], dto: RecommendDto) {
+    const { userId } = dto
+    const userFavorites = await this.favoriteRepository.find({
+      where: { user: { id: userId } },
+      relations: ['song'] // 加载关联的歌曲
+    })
+
+    const favoriteSongIds = userFavorites.map((favorite) => favorite.song.id)
+    console.log(favoriteSongIds)
+
+    const recommendedSongs: SongEntity[] = []
+
+    for (const item of preferences) {
+      if (item.type === 'artist') {
+        // item.value是歌手id， 查询歌手  的五首歌，要求不是user添加了收藏的
+        const songsByArtist = await this.songRepository
+          .createQueryBuilder('song')
+          .leftJoinAndSelect('song.artist', 'artist')
+          .leftJoinAndSelect('song.genre', 'genre')
+          .where('song.artist_id = :artistId', { artistId: item.value })
+          .andWhere('song.id NOT IN (:...favoriteSongIds)', { favoriteSongIds })
+          .orderBy('RAND()')
+          .take(5)
+          .getMany()
+        recommendedSongs.push(...songsByArtist)
+      } else if (item.type === 'genre') {
+        // item.value是流派id， 查询流派  的五首歌，要求不是user添加了收藏的
+        const songsByGenre = await this.songRepository
+          .createQueryBuilder('song')
+          .leftJoinAndSelect('song.artist', 'artist')
+          .leftJoinAndSelect('song.genre', 'genre')
+          .where('song.genre_id = :genreId', { genreId: item.value })
+          .andWhere('song.id NOT IN (:...favoriteSongIds)', { favoriteSongIds })
+          .orderBy('RAND()')
+          .take(5)
+          .getMany()
+        recommendedSongs.push(...songsByGenre)
+      }
+    }
+
+    return recommendedSongs
+  }
+
+  /**
+   * 计算推荐歌曲的得分
+   *
+   * 此函数根据用户的偏好对推荐的歌曲进行评分旨在为用户推荐他们可能喜欢的歌曲
+   * 它通过比较歌曲的艺术家和类型是否符合用户的偏好来计算得分，并返回 top 10 得分最高的歌曲
+   *
+   * @param recommendedSongs 推荐的歌曲列表这些是根据某种推荐算法选出的歌曲
+   * @param preferences 用户的偏好项目列表这些偏好项反映了用户对不同艺术家和类型的喜好程度
+   * @returns SongEntity[] 推荐歌曲的列表，按用户偏好得分排序并限制为 top 10
+   */
+  countScore(recommendedSongs: SongEntity[], preferences: PreferenceItem[]) {
+    const scoresMap = new Map<number, number>()
+    for (const song of recommendedSongs) {
+      if (scoresMap.has(song.id)) break
+      const artistScore =
+        preferences.filter((item) => item.type === 'artist').find((item) => item.value === song.artist.id)?.score ?? 0
+      const genreScore =
+        preferences.filter((item) => item.type === 'genre').find((item) => item.value === song.genre.id)?.score ?? 0
+      scoresMap.set(song.id, artistScore + genreScore)
+    }
+
+    let scores: Score[] = []
+    for (const song of scoresMap) {
+      scores.push({ id: song[0], score: song[1] })
+    }
+    scores = scores.sort((a, b) => b.score - a.score).slice(0, 10)
+
+    return scores
+      .map((item) => recommendedSongs.find((song) => song.id === item.id))
+      .map((song) => ({
+        ...song,
+        artistId: song.artist.id,
+        artist: song.artist.title
+      }))
+      .map((song, index) => ({ ...song, index: index + 1 }))
+      .map((song) => ({
+        ...song,
+        isFavorite: false
+      }))
   }
 
   async recommend(dto: RecommendDto) {
-    //step1 查询该用户的最近100条听歌记录, 统计出现的歌手次数和音乐流派，其中歌手权重分1分，流派权重分为2分
     await this.checkUserExists(dto.userId)
-    const result = await this.recommendHistory(dto)
+    //step1 查询该用户的最近100条听歌记录, 统计出现的歌手次数和音乐流派，其中歌手权重分2分，流派权重分为4分
+    const { artistMap: historyArtistMap, genreMap: historyGreneMap } = await this.recommendHistory(dto)
 
-    return successResponse(result)
+    //step2 查询该用户的最近收藏100条歌曲, 统计出现的歌手次数和音乐流派，其中歌手权重分1分，流派权重分为2分
+    const { artistMap: favoriteArtistMap, genreMap: favoriteGreneMap } = await this.recommendFavorite(dto)
+
+    //step3 合并分数并统计得分列表。
+    const artistMap = mergeMaps(historyArtistMap, favoriteArtistMap)
+    const genreMap = mergeMaps(historyGreneMap, favoriteGreneMap)
+    const preferences = this.countPreferences(artistMap, genreMap)
+
+    //step4 根据 preference 列表，查询音乐，返回歌曲列表
+    const recommendedSongs = await this.getSongsByPreferences(preferences, dto)
+
+    //step5 计算歌曲列表各曲得分取前十
+    const songs = this.countScore(recommendedSongs, preferences)
+    return successResponse(songs)
   }
 }
